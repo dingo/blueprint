@@ -1,0 +1,33 @@
+{
+    "name": "dingo/blueprint",
+    "description": "API Blueprint documentation generator.",
+    "keywords": ["blueprint", "api", "laravel", "dingo", "docs"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Jason Lewis",
+            "email": "jason.lewis1991@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "5.1.*",
+        "doctrine/annotations": "1.2.*",
+        "phpdocumentor/reflection-docblock": "2.0.*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dingo\\Blueprint\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
