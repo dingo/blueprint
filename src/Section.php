@@ -16,7 +16,7 @@ abstract class Section
     protected function getAnnotationByType($type)
     {
         return array_first($this->annotations, function ($key, $annotation) use ($type) {
-            $type = sprintf('Dingo\\Api\\Generator\\Annotation\\%s', $type);
+            $type = sprintf('Dingo\\Blueprint\\Annotation\\%s', $type);
 
             return $annotation instanceof $type;
         });
