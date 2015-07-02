@@ -15,7 +15,7 @@ class Response
     /**
      * @var string
      */
-    public $contentType;
+    public $contentType = "application/json";
 
     /**
      * @var mixed
