@@ -10,7 +10,7 @@ class Resource
     /**
      * @var string
      */
-    public $name;
+    public $identifier;
 
     /**
      * @var string

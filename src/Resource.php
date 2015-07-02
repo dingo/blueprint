@@ -138,8 +138,8 @@ class Resource extends Section
      */
     public function getIdentifier()
     {
-        if (($annotation = $this->getAnnotationByType('Resource')) && isset($annotation->name)) {
-            return $annotation->name;
+        if (($annotation = $this->getAnnotationByType('Resource')) && isset($annotation->identifier)) {
+            return $annotation->identifier;
         }
 
         return $this->identifier;
