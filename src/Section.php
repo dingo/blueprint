@@ -32,8 +32,13 @@ abstract class Section
         $parameters = new Collection;
 
         if ($annotation = $this->getAnnotationByType('Parameters')) {
-            foreach ($annotation->value as $parameter) {
-                $parameters[] = $parameter;
+            if(is_array($annotation->value)) {
+                foreach ($annotation->value as $parameter) {
+                    $parameters[] = $parameter;
+                }
+            }
+            else {
+                $parameters[] = $annotation->value;
             }
         }
 
