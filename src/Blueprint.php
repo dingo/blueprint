@@ -256,9 +256,13 @@ class Blueprint
         $line = strtok($body, "\r\n");
 
         while ($line !== false) {
-            $contents .= $this->tab(3).$line.$this->line();
+            $contents .= $this->tab(3).$line;
 
             $line = strtok("\r\n");
+
+            if ($line !== false) {
+                $contents .= $this->line();
+            }
         }
     }
 
