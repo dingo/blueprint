@@ -211,7 +211,9 @@ class Blueprint
             $this->appendHeaders($contents, $request->headers);
         }
 
-        $this->appendBody($contents, $this->prepareBody($response->body, $response->contentType));
+        if (isset($response->body)) {
+            $this->appendBody($contents, $this->prepareBody($response->body, $response->contentType));
+        }
     }
 
     /**
