@@ -287,8 +287,6 @@ class Blueprint
         foreach ($headers as $header => $value) {
             $contents .= $this->line().$this->tab(3).sprintf('%s: %s', $header, $value);
         }
-
-        $contents .= $this->line();
     }
 
     /**
