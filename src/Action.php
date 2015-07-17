@@ -142,16 +142,16 @@ class Action extends Section
         $uri = '/';
 
         if (($annotation = $this->getAnnotationByType('Method\Method')) && isset($annotation->uri)) {
-            $uri = $annotation->uri;
+            $uri = trim($annotation->uri, '/');
         } else {
             return;
         }
 
-        if (! starts_with($uri, '{')) {
+        if (! starts_with($uri, '{?')) {
             $uri = '/'.$uri;
         }
 
-        return rtrim('/'.trim($this->resource->getUri(), '/').trim($uri, '/'), '/');
+        return rtrim('/'.trim($this->resource->getUri(), '/').rtrim($uri, '/'), '/');
     }
 
     /**
