@@ -15,7 +15,6 @@ class UsersResourceStub
      * Get a JSON representation of all registered users.
      *
      * @Get("/")
-     * @Versions({"v1"})
      * @Response(200, body={
      *      {"id": 5, "name": "jason"},
      *      {"id": 13, "name": "bob"}
