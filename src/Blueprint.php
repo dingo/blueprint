@@ -159,7 +159,7 @@ class Blueprint
             $contents .= $this->line(2);
         });
 
-        return trim($contents);
+        return stripslashes(trim($contents));
     }
 
     /**
