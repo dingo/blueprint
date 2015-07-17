@@ -157,7 +157,7 @@ class Blueprint
             });
         });
 
-        return $contents;
+        return trim($contents);
     }
 
     /**
