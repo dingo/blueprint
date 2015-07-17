@@ -15,6 +15,7 @@ class UsersResourceStub
      * Get a JSON representation of all registered users.
      *
      * @Get("/")
+     * @Request(headers={"Accept": "application/vnd.api.v1+json"})
      * @Response(200, body={
      *      {"id": 5, "name": "jason"},
      *      {"id": 13, "name": "bob"}

@@ -27,6 +27,11 @@ Users Resource
 ## Show all users [GET /users]
 Get a JSON representation of all registered users.
 
++ Request (application/json)
+    + Headers
+
+            Accept: application/vnd.api.v1+json
+
 + Response 200 (application/json)
     + Body
 
@@ -115,6 +120,11 @@ Users Resource
 
 ## Show all users [GET /users]
 Get a JSON representation of all registered users.
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/vnd.api.v1+json
 
 + Response 200 (application/json)
     + Body
@@ -257,6 +267,11 @@ Users Resource
 
 ## Show all users [GET /users]
 Get a JSON representation of all registered users.
+
++ Request (application/json)
+    + Headers
+
+            Accept: application/vnd.api.v1+json
 
 + Response 200 (application/json)
     + Body
