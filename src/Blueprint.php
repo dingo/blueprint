@@ -79,7 +79,7 @@ class Blueprint
                 }
 
                 if ($annotations = $this->reader->getMethodAnnotations($method)) {
-                    if (!$actions->contains($method)) {
+                    if (! $actions->contains($method)) {
                         $actions->push(new Action($method, new Collection($annotations)));
                     }
                 }
