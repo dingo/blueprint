@@ -31,4 +31,9 @@ class Parameter
      * @var mixed
      */
     public $default;
+
+    /**
+     * @array<Member>
+     */
+    public $members;
 }
