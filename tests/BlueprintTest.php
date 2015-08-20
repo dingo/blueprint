@@ -206,8 +206,11 @@ Show all photos for a given user.
 + Parameters
     + sort (string, optional) - Column to sort by.
         + Default: name
-    + order (string, optional) - Order of results, either `asc` or `desc`.
+    + order (enum[string], optional) - Order of results, either `asc` or `desc`.
         + Default: desc
+        + Members
+            + `asc` - Ascending order.
+            + `desc` - Descending order.
 
 + Response 200 (application/json)
     + Body
@@ -353,8 +356,11 @@ Show all photos for a given user.
 + Parameters
     + sort (string, optional) - Column to sort by.
         + Default: name
-    + order (string, optional) - Order of results, either `asc` or `desc`.
+    + order (enum[string], optional) - Order of results, either `asc` or `desc`.
         + Default: desc
+        + Members
+            + `asc` - Ascending order.
+            + `desc` - Descending order.
 
 + Response 200 (application/json)
     + Body
