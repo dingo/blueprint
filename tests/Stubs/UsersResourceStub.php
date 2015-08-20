@@ -5,6 +5,7 @@ namespace Dingo\Blueprint\Tests\Stubs;
 /**
  * Users Resource
  *
+ * @Group("Accounts")
  * @Resource("Users", uri="/users")
  */
 class UsersResourceStub

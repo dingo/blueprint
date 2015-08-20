@@ -21,6 +21,8 @@ FORMAT: 1A
 
 # testing
 
+# Group Accounts
+
 # Users [/users]
 Users Resource
 
@@ -114,6 +116,8 @@ EOT;
 FORMAT: 1A
 
 # testing
+
+# Group Accounts
 
 # Users [/users]
 Users Resource
@@ -261,6 +265,8 @@ EOT;
 FORMAT: 1A
 
 # testing
+
+# Group Accounts
 
 # Users [/users]
 Users Resource

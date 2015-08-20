@@ -70,6 +70,20 @@ class Resource extends Section
     }
 
     /**
+     * Get the resource group.
+     *
+     * @return string
+     */
+    public function getGroup()
+    {
+        if (($annotation = $this->getAnnotationByType('Group')) && isset($annotation->identifier)) {
+            return $annotation->identifier;
+        }
+
+        return;
+    }
+
+    /**
      * Get the resource definition.
      *
      * @return string
