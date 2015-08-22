@@ -194,7 +194,7 @@ class Blueprint
     /**
      * Append a response subsection to an action.
      *
-     * @param string                                   $contents
+     * @param string                               $contents
      * @param \Dingo\Blueprint\Annotation\Response $response
      *
      * @return void
@@ -219,7 +219,7 @@ class Blueprint
     /**
      * Append a request subsection to an action.
      *
-     * @param string                                  $contents
+     * @param string                              $contents
      * @param \Dingo\Blueprint\Annotation\Request $request
      *
      * @return void

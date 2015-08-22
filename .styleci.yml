@@ -10,3 +10,4 @@ disabled:
   - new_with_braces
   - ordered_use
   - psr0
+  - phpdoc_short_description

@@ -3,8 +3,8 @@
 namespace Dingo\Blueprint;
 
 use ReflectionClass;
-use Illuminate\Support\Collection;
 use Dingo\Blueprint\Annotation;
+use Illuminate\Support\Collection;
 use phpDocumentor\Reflection\DocBlock;
 
 class Resource extends Section

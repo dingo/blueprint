@@ -2,7 +2,6 @@
 
 namespace Dingo\Blueprint\Tests;
 
-use ReflectionMethod;
 use Dingo\Blueprint\Blueprint;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Support\Collection;

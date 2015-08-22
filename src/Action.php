@@ -157,9 +157,9 @@ class Action extends Section
     /**
      * Get the actions method.
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public function getMethod()
     {
