@@ -64,7 +64,7 @@ class Blueprint
     public function generate(Collection $controllers, $name, $version)
     {
         $resources = $controllers->map(function ($controller) use ($version) {
-            $controller = new ReflectionClass($controller);
+            $controller = $controller instanceof ReflectionClass ? $controller : new ReflectionClass($controller);
 
             $actions = new Collection;
 
