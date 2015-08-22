@@ -151,7 +151,7 @@ class Action extends Section
             $uri = '/'.$uri;
         }
 
-        return rtrim('/'.trim($this->resource->getUri(), '/').rtrim($uri, '/'), '/');
+        return '/'.trim(trim($this->resource->getUri(), '/').rtrim($uri, '/'), '/');
     }
 
     /**

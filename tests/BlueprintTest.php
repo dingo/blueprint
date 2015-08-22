@@ -434,4 +434,23 @@ EOT;
 
         $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v2'));
     }
+
+    public function testGeneratingSimpleBlueprints()
+    {
+        $resources = new Collection([new Stubs\ActivityController]);
+
+        $blueprint = new Blueprint(new SimpleAnnotationReader);
+
+        $expected = <<<EOT
+FORMAT: 1A
+
+# testing
+
+# Activity
+
+## Show all activities [GET /activity]
+EOT;
+
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1'));
+    }
 }
