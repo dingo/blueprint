@@ -14,6 +14,5 @@ class ActivityController
      */
     public function getIndex()
     {
-
     }
 }
