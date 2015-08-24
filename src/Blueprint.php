@@ -4,7 +4,6 @@ namespace Dingo\Blueprint;
 
 use ReflectionClass;
 use RuntimeException;
-use Dingo\Blueprint\Annotation;
 use Illuminate\Support\Collection;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
@@ -344,7 +343,7 @@ class Blueprint
      */
     protected function tab($repeat = 1)
     {
-        return str_repeat("    ", $repeat);
+        return str_repeat('    ', $repeat);
     }
 
     /**
