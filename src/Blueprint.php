@@ -187,6 +187,22 @@ class Blueprint
             if (isset($parameter->default)) {
                 $this->appendSection($contents, sprintf('Default: %s', $parameter->default), 2, 1);
             }
+
+            if ($parameter->type == 'enum') {
+                $contents .= $this->line();
+                $contents .= $this->tab(2);
+                $contents .= '+ Members';
+
+                foreach ($parameter->members as $member) {
+                    $contents .= $this->line();
+                    $contents .= $this->tab(3);
+                    $contents .= sprintf(
+                        '+ `%s` - %s',
+                        $member->identifier,
+                        $member->description
+                    );
+                }
+            }
         });
     }
 
