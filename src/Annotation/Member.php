@@ -10,7 +10,7 @@ class Member
     /**
      * @var string
      */
-    public $value;
+    public $identifier;
 
     /**
      * @var string

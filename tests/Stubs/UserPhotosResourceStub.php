@@ -21,8 +21,8 @@ class UserPhotosResourceStub
      * @Parameters({
      *      @Parameter("sort", description="Column to sort by.", type="string", default="name"),
      *      @Parameter("order", description="Order of results, either `asc` or `desc`.", type="string", default="desc", members={
-     *          @Member(value="asc", description="Ascending order."),
-     *          @Member(value="desc", description="Descending order."),
+     *          @Member("asc", description="Ascending order."),
+     *          @Member("desc", description="Descending order."),
      *      })
      * })
      * @Versions({"v1", "v2"})
