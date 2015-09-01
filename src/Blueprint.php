@@ -86,10 +86,14 @@ class Blueprint
 
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
 
-            return new Resource($controller->getName(), $controller, $annotations, $actions);
+            $resource = new Resource($controller->getName(), $controller, $annotations, $actions);
+
+            return new Collection(['group' => $resource->getGroup(), 'resource' => $resource]);
         });
 
-        return $this->generateContentsFromResources($resources, $name);
+        $groups = $resources->groupBy('group');
+
+        return $this->generateContentsFromResources($groups, $name);
     }
 
     /**
@@ -100,7 +104,7 @@ class Blueprint
      *
      * @return string
      */
-    protected function generateContentsFromResources(Collection $resources, $name)
+    protected function generateContentsFromResources(Collection $groups, $name)
     {
         $contents = '';
 
@@ -109,53 +113,62 @@ class Blueprint
         $contents .= sprintf('# %s', $name);
         $contents .= $this->line(2);
 
-        $resources->each(function ($resource) use (&$contents) {
-            $contents .= $resource->getDefinition();
-
-            if ($description = $resource->getDescription()) {
-                $contents .= $this->line();
-                $contents .= $description;
-            }
-
-            if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
-                $this->appendParameters($contents, $parameters);
-            }
-
-            $resource->getActions()->each(function ($action) use (&$contents) {
+        $groups->each(function ($resources, $group) use (&$contents) {
+            if ($group) {
+                $contents .= sprintf('# Group %s', $group);
                 $contents .= $this->line(2);
-                $contents .= $action->getDefinition();
+            }
 
-                if ($description = $action->getDescription()) {
+            $resources->each(function ($resource) use (&$contents) {
+                $resource = $resource['resource'];
+
+                $contents .= $resource->getDefinition();
+
+                if ($description = $resource->getDescription()) {
                     $contents .= $this->line();
                     $contents .= $description;
                 }
 
-                if (($parameters = $action->getParameters()) && ! $parameters->isEmpty()) {
+                if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
                     $this->appendParameters($contents, $parameters);
                 }
 
-                if ($request = $action->getRequest()) {
-                    $this->appendRequest($contents, $request);
-                }
+                $resource->getActions()->each(function ($action) use (&$contents) {
+                    $contents .= $this->line(2);
+                    $contents .= $action->getDefinition();
 
-                if ($response = $action->getResponse()) {
-                    $this->appendResponse($contents, $response);
-                }
+                    if ($description = $action->getDescription()) {
+                        $contents .= $this->line();
+                        $contents .= $description;
+                    }
 
-                if ($transaction = $action->getTransaction()) {
-                    foreach ($transaction->value as $value) {
-                        if ($value instanceof Annotation\Request) {
-                            $this->appendRequest($contents, $value);
-                        } elseif ($value instanceof Annotation\Response) {
-                            $this->appendResponse($contents, $value);
-                        } else {
-                            throw new RuntimeException('Unsupported annotation type given in transaction.');
+                    if (($parameters = $action->getParameters()) && ! $parameters->isEmpty()) {
+                        $this->appendParameters($contents, $parameters);
+                    }
+
+                    if ($request = $action->getRequest()) {
+                        $this->appendRequest($contents, $request);
+                    }
+
+                    if ($response = $action->getResponse()) {
+                        $this->appendResponse($contents, $response);
+                    }
+
+                    if ($transaction = $action->getTransaction()) {
+                        foreach ($transaction->value as $value) {
+                            if ($value instanceof Annotation\Request) {
+                                $this->appendRequest($contents, $value);
+                            } elseif ($value instanceof Annotation\Response) {
+                                $this->appendResponse($contents, $value);
+                            } else {
+                                throw new RuntimeException('Unsupported annotation type given in transaction.');
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            $contents .= $this->line(2);
+                $contents .= $this->line(2);
+            });
         });
 
         return stripslashes(trim($contents));
