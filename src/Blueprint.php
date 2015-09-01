@@ -130,6 +130,10 @@ class Blueprint
                     $contents .= $description;
                 }
 
+                if (($attributes = $action->getAttributes()) && ! $attributes->isEmpty()) {
+                    $this->appendAttributes($contents, $attributes);
+                }
+
                 if (($parameters = $action->getParameters()) && ! $parameters->isEmpty()) {
                     $this->appendParameters($contents, $parameters);
                 }
@@ -159,6 +163,30 @@ class Blueprint
         });
 
         return stripslashes(trim($contents));
+    }
+
+    /**
+     * Append the attributes subsection to a resource or action.
+     *
+     * @param string                         $contents
+     * @param \Illuminate\Support\Collection $attributes
+     *
+     * @return void
+     */
+    protected function appendAttributes(&$contents, Collection $attributes)
+    {
+        $this->appendSection($contents, 'Attributes');
+
+        $attributes->each(function ($attribute) use (&$contents) {
+            $contents .= $this->line();
+            $contents .= $this->tab();
+            $contents .= sprintf(
+                '+ %s (%s) - %s',
+                $attribute->identifier,
+                $attribute->type,
+                $attribute->description
+            );
+        });
     }
 
     /**

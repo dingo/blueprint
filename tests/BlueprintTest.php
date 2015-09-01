@@ -225,6 +225,10 @@ Show all photos for a given user.
 ## Upload new photo [POST /users/{userId}/photos]
 Upload a new photo for a given user.
 
++ Attributes
+    + name (string) - The name of the photo
+    + src (string) - The location of the photo
+
 + Request (application/json)
     + Body
 
@@ -396,6 +400,10 @@ Show an individual photo that belongs to a given user.
 
 ## Upload new photo [POST /users/{userId}/photos]
 Upload a new photo for a given user.
+
++ Attributes
+    + name (string) - The name of the photo
+    + src (string) - The location of the photo
 
 + Request (application/json)
     + Body

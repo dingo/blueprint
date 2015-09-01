@@ -39,4 +39,22 @@ abstract class Section
 
         return $parameters;
     }
+
+    /**
+     * Get a sections attribute annotations.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttributes()
+    {
+        $attributes = new Collection;
+
+        if ($annotation = $this->getAnnotationByType('Attributes')) {
+            foreach ($annotation->value as $attribute) {
+                $attributes[] = $attribute;
+            }
+        }
+
+        return $attributes;
+    }
 }
