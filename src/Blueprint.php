@@ -219,7 +219,7 @@ class Blueprint
             if (isset($parameter->members)) {
                 $this->appendSection($contents, 'Members', 2, 1);
                 foreach ($parameter->members as $member) {
-                    $this->appendSection($contents, sprintf('`%s` - %s', $member->value, $member->description), 3, 1);
+                    $this->appendSection($contents, sprintf('`%s` - %s', $member->identifier, $member->description), 3, 1);
                 }
             }
         });
