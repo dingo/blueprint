@@ -18,7 +18,17 @@ class Attribute
     public $type = 'string';
 
     /**
+     * @var bool
+     */
+    public $required = false;
+
+    /**
      * @var string
      */
     public $description;
+
+    /**
+     * @var mixed
+     */
+    public $sample;
 }

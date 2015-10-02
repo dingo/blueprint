@@ -226,8 +226,8 @@ Show all photos for a given user.
 Upload a new photo for a given user.
 
 + Attributes
-    + name (string) - The name of the photo
-    + src (string) - The location of the photo
+    + name: photo (string, optional) - The name of the photo
+    + src (string, required) - The location of the photo
 
 + Request (application/json)
     + Body
@@ -402,8 +402,8 @@ Show an individual photo that belongs to a given user.
 Upload a new photo for a given user.
 
 + Attributes
-    + name (string) - The name of the photo
-    + src (string) - The location of the photo
+    + name: photo (string, optional) - The name of the photo
+    + src (string, required) - The location of the photo
 
 + Request (application/json)
     + Body
