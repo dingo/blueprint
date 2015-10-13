@@ -170,16 +170,17 @@ class Blueprint
      *
      * @param string                         $contents
      * @param \Illuminate\Support\Collection $attributes
+     * @param int                            $indent
      *
      * @return void
      */
-    protected function appendAttributes(&$contents, Collection $attributes)
+    protected function appendAttributes(&$contents, Collection $attributes, $indent = 0)
     {
-        $this->appendSection($contents, 'Attributes');
+        $this->appendSection($contents, 'Attributes', $indent);
 
-        $attributes->each(function ($attribute) use (&$contents) {
+        $attributes->each(function ($attribute) use (&$contents, $indent) {
             $contents .= $this->line();
-            $contents .= $this->tab();
+            $contents .= $this->tab(1 + $indent);
             $contents .= sprintf('+ %s', $attribute->identifier);
 
             if ($attribute->sample) {
@@ -251,6 +252,10 @@ class Blueprint
             $this->appendHeaders($contents, $request->headers);
         }
 
+        if (isset($response->attributes)) {
+            $this->appendAttributes($contents, collect($response->attributes), 1);
+        }
+
         if (isset($response->body)) {
             $this->appendBody($contents, $this->prepareBody($response->body, $response->contentType));
         }
@@ -276,6 +281,10 @@ class Blueprint
 
         if (! empty($request->headers)) {
             $this->appendHeaders($contents, $request->headers);
+        }
+
+        if (isset($request->attributes)) {
+            $this->appendAttributes($contents, collect($request->attributes), 1);
         }
 
         if (isset($request->body)) {

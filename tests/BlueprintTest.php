@@ -70,6 +70,11 @@ Get a JSON representation of an existing user.
 Create a new user.
 
 + Request (application/json)
+
+    + Attributes
+        + name: jason (string, required) - The user name
+        + email: jason@jason.com (string, required) - The user email
+        + password: 1234567 (string, required) - The user password
     + Body
 
             {
@@ -164,6 +169,11 @@ Get a JSON representation of an existing user.
 Create a new user.
 
 + Request (application/json)
+
+    + Attributes
+        + name: jason (string, required) - The user name
+        + email: jason@jason.com (string, required) - The user email
+        + password: 1234567 (string, required) - The user password
     + Body
 
             {
@@ -318,6 +328,11 @@ Get a JSON representation of an existing user.
 Create a new user.
 
 + Request (application/json)
+
+    + Attributes
+        + name: jason (string, required) - The user name
+        + email: jason@jason.com (string, required) - The user email
+        + password: 1234567 (string, required) - The user password
     + Body
 
             {
@@ -383,6 +398,11 @@ Show an individual photo that belongs to a given user.
     + photoId (integer, required) - ID of photo to show.
 
 + Response 200 (application/json)
+
+    + Attributes
+        + id: 1 (number, optional) - The photo id
+        + name: photo (string, optional) - The photo name
+        + src: path/to/cool/photo.jpg (string, optional) - The photo path
     + Body
 
             {

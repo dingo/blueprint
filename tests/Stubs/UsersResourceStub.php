@@ -56,6 +56,10 @@ class UsersResourceStub
      *          "name": "jason",
      *          "email": "jason@jason.com",
      *          "password": "1234567"
+     *      }, attributes={
+     *          @Attribute("name", type="string", description="The user name", sample="jason", required=true),
+     *          @Attribute("email", type="string", description="The user email", sample="jason@jason.com", required=true),
+     *          @Attribute("password", type="string", description="The user password", sample="1234567", required=true)
      *      }),
      *      @Response(200, body={"id": 10, "name": "jason", "email": "jason@jason.com"}),
      *      @Response(422, body={
