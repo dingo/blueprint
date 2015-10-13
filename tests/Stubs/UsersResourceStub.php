@@ -52,7 +52,7 @@ class UsersResourceStub
      *
      * @Post("/")
      * @Transaction({
-     *      @Request({
+     *      @Request(body={
      *          "name": "jason",
      *          "email": "jason@jason.com",
      *          "password": "1234567"
