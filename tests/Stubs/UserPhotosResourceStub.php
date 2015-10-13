@@ -67,8 +67,8 @@ class UserPhotosResourceStub
      * @Post("/")
      * @Versions({"v1", "v2"})
      * @Attributes({
-     *      @Attribute("name", type="string", description="The name of the photo"),
-     *      @Attribute("src", type="string", description="The location of the photo")
+     *      @Attribute("name", type="string", description="The name of the photo", sample="photo"),
+     *      @Attribute("src", type="string", description="The location of the photo", required=true)
      * })
      * @Transaction({
      *      @Request({"name": "photo", "src": "cool/new/photo.jpg"}),

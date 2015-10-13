@@ -180,10 +180,16 @@ class Blueprint
         $attributes->each(function ($attribute) use (&$contents) {
             $contents .= $this->line();
             $contents .= $this->tab();
+            $contents .= sprintf('+ %s', $attribute->identifier);
+
+            if ($attribute->sample) {
+                $contents .= sprintf(': %s', $attribute->sample);
+            }
+
             $contents .= sprintf(
-                '+ %s (%s) - %s',
-                $attribute->identifier,
+                ' (%s, %s) - %s',
                 $attribute->type,
+                $attribute->required ? 'required' : 'optional',
                 $attribute->description
             );
         });
