@@ -356,7 +356,7 @@ class Blueprint
      */
     protected function prepareBody($body, $contentType)
     {
-        if ($contentType == 'application/json') {
+        if (strpos($contentType, 'application/json') === 0) {
             return json_encode($body, JSON_PRETTY_PRINT);
         }
 
