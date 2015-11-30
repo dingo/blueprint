@@ -50,6 +50,10 @@ class UserPhotosResourceStub
      *          "id": 1,
      *          "name": "photo",
      *          "src": "path/to/cool/photo.jpg"
+     *      }, attributes={
+     *          @Attribute("id", type="number", description="The photo id", sample="1"),
+     *          @Attribute("name", type="string", description="The photo name", sample="photo"),
+     *          @Attribute("src", type="string", description="The photo path", sample="path/to/cool/photo.jpg")
      *      }),
      *      @Response(404, body={"message": "Photo could not be found."})
      * })

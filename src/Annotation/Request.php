@@ -26,4 +26,9 @@ class Request
      * @var array
      */
     public $headers = [];
+
+    /**
+     * @var array<Dingo\Blueprint\Annotation\Attribute>
+     */
+    public $attributes;
 }
