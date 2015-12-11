@@ -33,7 +33,7 @@ class UsersResourceStub
      *
      * @Get("/{id}")
      * @Parameters({
-     *      @Parameter("id", description="ID of user to retrieve", type="integer", required=true)
+     *      @Parameter("id", description="ID of user to retrieve", type="integer", required=true, example=5)
      * })
      * @Transaction({
      *      @Response(200, body={"id": 5, "name": "jason"}),
