@@ -121,7 +121,7 @@ class Blueprint
                 $this->appendParameters($contents, $parameters);
             }
 
-            $resource->getActions()->each(function ($action) use (&$contents) {
+            $resource->getActions()->each(function ($action) use (&$contents, $resource) {
                 $contents .= $this->line(2);
                 $contents .= $action->getDefinition();
 
@@ -139,19 +139,19 @@ class Blueprint
                 }
 
                 if ($request = $action->getRequest()) {
-                    $this->appendRequest($contents, $request);
+                    $this->appendRequest($contents, $request, $resource);
                 }
 
                 if ($response = $action->getResponse()) {
-                    $this->appendResponse($contents, $response);
+                    $this->appendResponse($contents, $response, $resource);
                 }
 
                 if ($transaction = $action->getTransaction()) {
                     foreach ($transaction->value as $value) {
                         if ($value instanceof Annotation\Request) {
-                            $this->appendRequest($contents, $value);
+                            $this->appendRequest($contents, $value, $resource);
                         } elseif ($value instanceof Annotation\Response) {
-                            $this->appendResponse($contents, $value);
+                            $this->appendResponse($contents, $value, $resource);
                         } else {
                             throw new RuntimeException('Unsupported annotation type given in transaction.');
                         }
@@ -237,10 +237,11 @@ class Blueprint
      *
      * @param string                               $contents
      * @param \Dingo\Blueprint\Annotation\Response $response
+     * @param Resource                             $resource
      *
      * @return void
      */
-    protected function appendResponse(&$contents, Annotation\Response $response)
+    protected function appendResponse(&$contents, Annotation\Response $response, Resource $resource)
     {
         $this->appendSection($contents, sprintf('Response %s', $response->statusCode));
 
@@ -248,8 +249,8 @@ class Blueprint
             $contents .= ' ('.$response->contentType.')';
         }
 
-        if (! empty($request->headers)) {
-            $this->appendHeaders($contents, $request->headers);
+        if (! empty($response->headers) || $resource->hasResponseHeaders()) {
+            $this->appendHeaders($contents, array_merge($resource->getResponseHeaders(), $response->headers));
         }
 
         if (isset($response->attributes)) {
@@ -266,10 +267,11 @@ class Blueprint
      *
      * @param string                              $contents
      * @param \Dingo\Blueprint\Annotation\Request $request
+     * @param Resource                            $resource
      *
      * @return void
      */
-    protected function appendRequest(&$contents, $request)
+    protected function appendRequest(&$contents, $request, Resource $resource)
     {
         $this->appendSection($contents, 'Request');
 
@@ -279,8 +281,8 @@ class Blueprint
 
         $contents .= ' ('.$request->contentType.')';
 
-        if (! empty($request->headers)) {
-            $this->appendHeaders($contents, $request->headers);
+        if (! empty($request->headers) || $resource->hasRequestHeaders()) {
+            $this->appendHeaders($contents, array_merge($resource->getRequestHeaders(), $request->headers));
         }
 
         if (isset($request->attributes)) {
@@ -323,7 +325,7 @@ class Blueprint
      * Append a headers subsection to an action.
      *
      * @param string $contents
-     * @param array  $response
+     * @param array  $headers
      *
      * @return void
      */

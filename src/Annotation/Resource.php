@@ -21,4 +21,14 @@ class Resource
      * @var string
      */
     public $method;
+
+    /**
+     * @var array
+     */
+    public $requestHeaders = [];
+
+    /**
+     * @var array
+     */
+    public $responseHeaders = [];
 }

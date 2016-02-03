@@ -37,6 +37,20 @@ class Resource extends Section
     protected $actions;
 
     /**
+     * Collection of default request headers belonging to a resource.
+     *
+     * @var array
+     */
+    protected $requestHeaders = [];
+
+    /**
+     * Collection of default response headers belonging to a resource.
+     *
+     * @var array
+     */
+    protected $responseHeaders = [];
+
+    /**
      * Create a new resource instance.
      *
      * @param string                         $identifier
@@ -142,5 +156,53 @@ class Resource extends Section
         }
 
         return $this->identifier;
+    }
+
+    /**
+     * Check if resource has default request headers set.
+     *
+     * @return bool
+     */
+    public function hasRequestHeaders()
+    {
+        return count($this->getRequestHeaders()) > 0;
+    }
+
+    /**
+     * Get the resource default request headers.
+     *
+     * @return array
+     */
+    public function getRequestHeaders()
+    {
+        if (($annotation = $this->getAnnotationByType('Resource')) && isset($annotation->requestHeaders)) {
+            return $annotation->requestHeaders;
+        }
+
+        return $this->requestHeaders;
+    }
+
+    /**
+     * Check if resource has default response headers set.
+     *
+     * @return bool
+     */
+    public function hasResponseHeaders()
+    {
+        return count($this->getResponseHeaders()) > 0;
+    }
+
+    /**
+     * Get the resource default response headers.
+     *
+     * @return array
+     */
+    public function getResponseHeaders()
+    {
+        if (($annotation = $this->getAnnotationByType('Resource')) && isset($annotation->responseHeaders)) {
+            return $annotation->responseHeaders;
+        }
+
+        return $this->responseHeaders;
     }
 }
