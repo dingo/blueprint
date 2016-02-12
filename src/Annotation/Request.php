@@ -13,6 +13,11 @@ class Request
     public $body;
 
     /**
+     * @var mixed
+     */
+    public $schema;
+
+    /**
      * @var string
      */
     public $contentType = 'application/json';

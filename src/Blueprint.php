@@ -294,6 +294,10 @@ class Blueprint
         if (isset($request->body)) {
             $this->appendBody($contents, $this->prepareBody($request->body, $request->contentType));
         }
+
+        if (isset($request->schema)) {
+            $this->appendSchema($contents, $this->prepareSchema($request->schema, $request->contentType));
+        }
     }
 
     /**
