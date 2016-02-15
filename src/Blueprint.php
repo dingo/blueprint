@@ -86,6 +86,10 @@ class Blueprint
 
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
 
+            if(count($actions) === 0){
+                return false;
+            }
+
             return new Resource($controller->getName(), $controller, $annotations, $actions);
         });
 
@@ -110,6 +114,10 @@ class Blueprint
         $contents .= $this->line(2);
 
         $resources->each(function ($resource) use (&$contents) {
+            if(!$resource){
+                return;
+            }
+
             $contents .= $resource->getDefinition();
 
             if ($description = $resource->getDescription()) {
