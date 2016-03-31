@@ -5,6 +5,7 @@ namespace Dingo\Blueprint\Tests;
 use Dingo\Blueprint\Blueprint;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Support\Collection;
+use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
 class ActionTest extends PHPUnit_Framework_TestCase
@@ -13,7 +14,7 @@ class ActionTest extends PHPUnit_Framework_TestCase
     {
         $resources = new Collection([new Stubs\UsersResourceStub]);
 
-        $blueprint = new Blueprint(new SimpleAnnotationReader);
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
         $expected = <<<EOT
 FORMAT: 1A
@@ -105,14 +106,14 @@ Create a new user.
             }
 EOT;
 
-        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1'));
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
     }
 
     public function testGeneratingBlueprintForMultipleResourcesWithVersionOne()
     {
         $resources = new Collection([new Stubs\UsersResourceStub, new Stubs\UserPhotosResourceStub]);
 
-        $blueprint = new Blueprint(new SimpleAnnotationReader);
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
         $expected = <<<EOT
 FORMAT: 1A
@@ -264,14 +265,14 @@ Upload a new photo for a given user.
             }
 EOT;
 
-        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1'));
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
     }
 
     public function testGeneratingBlueprintForMultipleResourcesWithVersionTwo()
     {
         $resources = new Collection([new Stubs\UsersResourceStub, new Stubs\UserPhotosResourceStub]);
 
-        $blueprint = new Blueprint(new SimpleAnnotationReader);
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
         $expected = <<<EOT
 FORMAT: 1A
@@ -465,14 +466,14 @@ Delete an existing photo for a given user.
             }
 EOT;
 
-        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v2'));
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v2', null));
     }
 
     public function testGeneratingSimpleBlueprints()
     {
         $resources = new Collection([new Stubs\ActivityController]);
 
-        $blueprint = new Blueprint(new SimpleAnnotationReader);
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
         $expected = <<<EOT
 FORMAT: 1A
@@ -484,6 +485,6 @@ FORMAT: 1A
 ## Show all activities [GET /activity]
 EOT;
 
-        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1'));
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
     }
 }

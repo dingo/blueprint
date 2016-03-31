@@ -4,7 +4,9 @@ namespace Dingo\Blueprint;
 
 use ReflectionClass;
 use RuntimeException;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
@@ -18,15 +20,31 @@ class Blueprint
     protected $reader;
 
     /**
+     * Filesytsem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
+
+    /**
+     * Include path for documentation files.
+     *
+     * @var string
+     */
+    protected $includePath;
+
+    /**
      * Create a new generator instance.
      *
      * @param \Doctrine\Common\Annotations\SimpleAnnotationReader $reader
+     * @param \Illuminate\Filesystem\Filesystem                   $files
      *
      * @return void
      */
-    public function __construct(SimpleAnnotationReader $reader)
+    public function __construct(SimpleAnnotationReader $reader, Filesystem $files)
     {
         $this->reader = $reader;
+        $this->files = $files;
 
         $this->registerAnnotationLoader();
     }
@@ -55,13 +73,17 @@ class Blueprint
     /**
      * Generate documentation with the name and version.
      *
-     * @param string $name
-     * @param string $version
+     * @param \Illuminate\Support\Collection $controllers
+     * @param string                         $name
+     * @param string                         $version
+     * @param string                         $includePath
      *
      * @return bool
      */
-    public function generate(Collection $controllers, $name, $version)
+    public function generate(Collection $controllers, $name, $version, $includePath)
     {
+        $this->includePath = $includePath;
+
         $resources = $controllers->map(function ($controller) use ($version) {
             $controller = $controller instanceof ReflectionClass ? $controller : new ReflectionClass($controller);
 
@@ -89,7 +111,11 @@ class Blueprint
             return new Resource($controller->getName(), $controller, $annotations, $actions);
         });
 
-        return $this->generateContentsFromResources($resources, $name);
+        $contents = $this->generateContentsFromResources($resources, $name);
+
+        $this->includePath = null;
+
+        return $contents;
     }
 
     /**
@@ -368,6 +394,22 @@ class Blueprint
      */
     protected function prepareBody($body, $contentType)
     {
+        if (is_string($body) && Str::startsWith($body, ['json', 'file'])) {
+            list($type, $path) = explode(':', $body);
+
+            if (! Str::endsWith($path, '.json') && $type == 'json') {
+                $path .= '.json';
+            }
+
+            $body = $this->files->get($includePath.'/'.$path);
+
+            json_decode($body);
+
+            if (json_last_error() == JSON_ERROR_NONE) {
+                return $body;
+            }
+        }
+
         if (strpos($contentType, 'application/json') === 0) {
             return json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
