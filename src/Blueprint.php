@@ -367,7 +367,7 @@ class Blueprint
     protected function prepareBody($body, $contentType)
     {
         if (strpos($contentType, 'application/json') === 0) {
-            return json_encode($body, JSON_PRETTY_PRINT);
+            return json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
 
         return $body;
