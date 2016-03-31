@@ -33,6 +33,11 @@ class Parameter
     public $default;
 
     /**
+     * @var mixed
+     */
+    public $example;
+
+    /**
      * @array<Member>
      */
     public $members;

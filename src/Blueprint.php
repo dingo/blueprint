@@ -212,8 +212,9 @@ class Blueprint
             $contents .= $this->line();
             $contents .= $this->tab();
             $contents .= sprintf(
-                '+ %s (%s, %s) - %s',
+                '+ %s:%s (%s, %s) - %s',
                 $parameter->identifier,
+                $parameter->example ? " `{$parameter->example}`" : '',
                 $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
                 $parameter->required ? 'required' : 'optional',
                 $parameter->description
