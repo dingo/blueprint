@@ -264,7 +264,7 @@ class Blueprint
      *
      * @param string                               $contents
      * @param \Dingo\Blueprint\Annotation\Response $response
-     * @param Resource                             $resource
+     * @param \Dingo\Blueprint\Resource            $resource
      *
      * @return void
      */
@@ -294,7 +294,7 @@ class Blueprint
      *
      * @param string                              $contents
      * @param \Dingo\Blueprint\Annotation\Request $request
-     * @param Resource                            $resource
+     * @param \Dingo\Blueprint\Resource           $resource
      *
      * @return void
      */

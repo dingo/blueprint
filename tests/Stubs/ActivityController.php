@@ -8,7 +8,7 @@ namespace Dingo\Blueprint\Tests\Stubs;
 class ActivityController
 {
     /**
-     * Show all activities
+     * Show all activities.
      *
      * @Get("activity")
      */

@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
-class ActionTest extends PHPUnit_Framework_TestCase
+class BlueprintTest extends PHPUnit_Framework_TestCase
 {
     public function testGeneratingBlueprintForSingleResource()
     {
@@ -16,15 +16,15 @@ class ActionTest extends PHPUnit_Framework_TestCase
 
         $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 FORMAT: 1A
 
 # testing
 
 # Users [/users]
-Users Resource
+Users Resource.
 
-## Show all users [GET /users]
+## Show all users. [GET /users]
 Get a JSON representation of all registered users.
 
 + Request (application/json)
@@ -46,7 +46,7 @@ Get a JSON representation of all registered users.
                 }
             ]
 
-## Show existing user [GET /users/{id}]
+## Show existing user. [GET /users/{id}]
 Get a JSON representation of an existing user.
 
 + Parameters
@@ -67,7 +67,7 @@ Get a JSON representation of an existing user.
                 "message": "User could not be found."
             }
 
-## Create new user [POST /users]
+## Create new user. [POST /users]
 Create a new user.
 
 + Request (application/json)
@@ -115,15 +115,15 @@ EOT;
 
         $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 FORMAT: 1A
 
 # testing
 
 # Users [/users]
-Users Resource
+Users Resource.
 
-## Show all users [GET /users]
+## Show all users. [GET /users]
 Get a JSON representation of all registered users.
 
 + Request (application/json)
@@ -145,7 +145,7 @@ Get a JSON representation of all registered users.
                 }
             ]
 
-## Show existing user [GET /users/{id}]
+## Show existing user. [GET /users/{id}]
 Get a JSON representation of an existing user.
 
 + Parameters
@@ -166,7 +166,7 @@ Get a JSON representation of an existing user.
                 "message": "User could not be found."
             }
 
-## Create new user [POST /users]
+## Create new user. [POST /users]
 Create a new user.
 
 + Request (application/json)
@@ -205,12 +205,12 @@ Create a new user.
             }
 
 # User Photos [/users/{userId}/photos]
-User Photos Resource
+User Photos Resource.
 
 + Parameters
     + userId: (integer, required) - ID of user who owns the photos.
 
-## Show all photos [GET /users/{userId}/photos{?sort,order}]
+## Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
@@ -233,7 +233,7 @@ Show all photos for a given user.
                 }
             ]
 
-## Upload new photo [POST /users/{userId}/photos]
+## Upload new photo. [POST /users/{userId}/photos]
 Upload a new photo for a given user.
 
 + Attributes
@@ -274,15 +274,15 @@ EOT;
 
         $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 FORMAT: 1A
 
 # testing
 
 # Users [/users]
-Users Resource
+Users Resource.
 
-## Show all users [GET /users]
+## Show all users. [GET /users]
 Get a JSON representation of all registered users.
 
 + Request (application/json)
@@ -304,7 +304,7 @@ Get a JSON representation of all registered users.
                 }
             ]
 
-## Show existing user [GET /users/{id}]
+## Show existing user. [GET /users/{id}]
 Get a JSON representation of an existing user.
 
 + Parameters
@@ -325,7 +325,7 @@ Get a JSON representation of an existing user.
                 "message": "User could not be found."
             }
 
-## Create new user [POST /users]
+## Create new user. [POST /users]
 Create a new user.
 
 + Request (application/json)
@@ -364,12 +364,12 @@ Create a new user.
             }
 
 # User Photos [/users/{userId}/photos]
-User Photos Resource
+User Photos Resource.
 
 + Parameters
     + userId: (integer, required) - ID of user who owns the photos.
 
-## Show all photos [GET /users/{userId}/photos{?sort,order}]
+## Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
@@ -392,7 +392,7 @@ Show all photos for a given user.
                 }
             ]
 
-## Show individual photo [GET /users/{userId}/photos/{photoId}]
+## Show individual photo. [GET /users/{userId}/photos/{photoId}]
 Show an individual photo that belongs to a given user.
 
 + Parameters
@@ -419,7 +419,7 @@ Show an individual photo that belongs to a given user.
                 "message": "Photo could not be found."
             }
 
-## Upload new photo [POST /users/{userId}/photos]
+## Upload new photo. [POST /users/{userId}/photos]
 Upload a new photo for a given user.
 
 + Attributes
@@ -450,7 +450,7 @@ Upload a new photo for a given user.
                 "message": "Could not upload photo due to errors."
             }
 
-## Delete photo [DELETE /users/{userId}/photos/{photoId}]
+## Delete photo. [DELETE /users/{userId}/photos/{photoId}]
 Delete an existing photo for a given user.
 
 + Parameters
@@ -475,14 +475,14 @@ EOT;
 
         $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
 
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 FORMAT: 1A
 
 # testing
 
 # Activity
 
-## Show all activities [GET /activity]
+## Show all activities. [GET /activity]
 EOT;
 
         $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));

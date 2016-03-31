@@ -3,14 +3,14 @@
 namespace Dingo\Blueprint\Tests\Stubs;
 
 /**
- * Users Resource
+ * Users Resource.
  *
  * @Resource("Users", uri="/users")
  */
 class UsersResourceStub
 {
     /**
-     * Show all users
+     * Show all users.
      *
      * Get a JSON representation of all registered users.
      *
@@ -27,7 +27,7 @@ class UsersResourceStub
     }
 
     /**
-     * Show existing user
+     * Show existing user.
      *
      * Get a JSON representation of an existing user.
      *
@@ -46,7 +46,7 @@ class UsersResourceStub
     }
 
     /**
-     * Create new user
+     * Create new user.
      *
      * Create a new user.
      *

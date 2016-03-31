@@ -3,7 +3,7 @@
 namespace Dingo\Blueprint\Tests\Stubs;
 
 /**
- * User Photos Resource
+ * User Photos Resource.
  *
  * @Resource("User Photos", uri="/users/{userId}/photos")
  * @Parameters({
@@ -13,7 +13,7 @@ namespace Dingo\Blueprint\Tests\Stubs;
 class UserPhotosResourceStub
 {
     /**
-     * Show all photos
+     * Show all photos.
      *
      * Show all photos for a given user.
      *
@@ -36,7 +36,7 @@ class UserPhotosResourceStub
     }
 
     /**
-     * Show individual photo
+     * Show individual photo.
      *
      * Show an individual photo that belongs to a given user.
      *
@@ -64,7 +64,7 @@ class UserPhotosResourceStub
     }
 
     /**
-     * Upload new photo
+     * Upload new photo.
      *
      * Upload a new photo for a given user.
      *
@@ -92,7 +92,7 @@ class UserPhotosResourceStub
     }
 
     /**
-     * Delete photo
+     * Delete photo.
      *
      * Delete an existing photo for a given user.
      *
