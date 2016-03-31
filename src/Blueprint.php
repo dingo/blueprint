@@ -249,8 +249,8 @@ class Blueprint
             $contents .= ' ('.$response->contentType.')';
         }
 
-        if (! empty($request->headers)) {
-            $this->appendHeaders($contents, $request->headers);
+        if (! empty($response->headers)) {
+            $this->appendHeaders($contents, $response->headers);
         }
 
         if (isset($response->attributes)) {
@@ -259,6 +259,10 @@ class Blueprint
 
         if (isset($response->body)) {
             $this->appendBody($contents, $this->prepareBody($response->body, $response->contentType));
+        }
+
+        if (isset($response->schema)) {
+            $this->appendSchema($contents, $this->prepareSchema($response->schema, $response->contentType));
         }
     }
 
@@ -291,6 +295,10 @@ class Blueprint
         if (isset($request->body)) {
             $this->appendBody($contents, $this->prepareBody($request->body, $request->contentType));
         }
+
+        if (isset($request->schema)) {
+            $this->appendSchema($contents, $this->prepareSchema($request->schema, $request->contentType));
+        }
     }
 
     /**
@@ -308,6 +316,33 @@ class Blueprint
         $contents .= $this->line(2);
 
         $line = strtok($body, "\r\n");
+
+        while ($line !== false) {
+            $contents .= $this->tab(3).$line;
+
+            $line = strtok("\r\n");
+
+            if ($line !== false) {
+                $contents .= $this->line();
+            }
+        }
+    }
+
+    /**
+     * Append a schema subsection to an action.
+     *
+     * @param string $contents
+     * @param string $schema
+     *
+     * @return void
+     */
+    protected function appendSchema(&$contents, $schema)
+    {
+        $this->appendSection($contents, 'Schema', 1, 1);
+
+        $contents .= $this->line(2);
+
+        $line = strtok($schema, "\r\n");
 
         while ($line !== false) {
             $contents .= $this->tab(3).$line;
@@ -371,6 +406,23 @@ class Blueprint
         }
 
         return $body;
+    }
+
+    /**
+     * Prepare a schema.
+     *
+     * @param string $schema
+     * @param string $contentType
+     *
+     * @return string
+     */
+    protected function prepareSchema($schema, $contentType)
+    {
+        if (strpos($contentType, 'application/json') === 0) {
+            return json_encode($schema, JSON_PRETTY_PRINT);
+        }
+
+        return $schema;
     }
 
     /**

@@ -23,6 +23,11 @@ class Response
     public $body;
 
     /**
+     * @var mixed
+     */
+    public $schema;
+
+    /**
      * @var array
      */
     public $headers = [];
