@@ -249,7 +249,7 @@ class Blueprint
             $contents .= ' ('.$response->contentType.')';
         }
 
-        if (! empty($request->headers)) {
+        if (! empty($response->headers)) {
             $this->appendHeaders($contents, $request->headers);
         }
 
