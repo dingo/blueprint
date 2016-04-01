@@ -136,6 +136,10 @@ class Blueprint
         $contents .= $this->line(2);
 
         $resources->each(function ($resource) use (&$contents) {
+            if ($resource->getActions()->isEmpty()) {
+                return;
+            }
+
             $contents .= $resource->getDefinition();
 
             if ($description = $resource->getDescription()) {
