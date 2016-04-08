@@ -204,13 +204,15 @@ Create a new user.
                 }
             }
 
-# User Photos [/users/{userId}/photos]
+# Group Photo Functions
+
+## User Photos [/users/{userId}/photos]
 User Photos Resource.
 
 + Parameters
     + userId: (integer, required) - ID of user who owns the photos.
 
-## Show all photos. [GET /users/{userId}/photos{?sort,order}]
+### Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
@@ -233,7 +235,7 @@ Show all photos for a given user.
                 }
             ]
 
-## Upload new photo. [POST /users/{userId}/photos]
+### Upload new photo. [POST /users/{userId}/photos]
 Upload a new photo for a given user.
 
 + Attributes
@@ -363,13 +365,15 @@ Create a new user.
                 }
             }
 
-# User Photos [/users/{userId}/photos]
+# Group Photo Functions
+
+## User Photos [/users/{userId}/photos]
 User Photos Resource.
 
 + Parameters
     + userId: (integer, required) - ID of user who owns the photos.
 
-## Show all photos. [GET /users/{userId}/photos{?sort,order}]
+### Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
@@ -392,7 +396,7 @@ Show all photos for a given user.
                 }
             ]
 
-## Show individual photo. [GET /users/{userId}/photos/{photoId}]
+### Show individual photo. [GET /users/{userId}/photos/{photoId}]
 Show an individual photo that belongs to a given user.
 
 + Parameters
@@ -419,7 +423,7 @@ Show an individual photo that belongs to a given user.
                 "message": "Photo could not be found."
             }
 
-## Upload new photo. [POST /users/{userId}/photos]
+### Upload new photo. [POST /users/{userId}/photos]
 Upload a new photo for a given user.
 
 + Attributes
@@ -450,7 +454,7 @@ Upload a new photo for a given user.
                 "message": "Could not upload photo due to errors."
             }
 
-## Delete photo. [DELETE /users/{userId}/photos/{photoId}]
+### Delete photo. [DELETE /users/{userId}/photos/{photoId}]
 Delete an existing photo for a given user.
 
 + Parameters
