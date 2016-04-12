@@ -405,7 +405,7 @@ class Blueprint
                 $path .= '.json';
             }
 
-            $body = $this->files->get($includePath.'/'.$path);
+            $body = $this->files->get($this->includePath.'/'.$path);
 
             json_decode($body);
 
