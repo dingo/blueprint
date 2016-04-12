@@ -80,7 +80,7 @@ class Blueprint
      *
      * @return bool
      */
-    public function generate(Collection $controllers, $name, $version, $includePath=null)
+    public function generate(Collection $controllers, $name, $version, $includePath = null)
     {
         $this->includePath = $includePath;
 
