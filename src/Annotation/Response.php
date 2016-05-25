@@ -31,4 +31,9 @@ class Response
      * @var array<Dingo\Blueprint\Annotation\Attribute>
      */
     public $attributes;
+
+    /**
+     * @var Dingo\Blueprint\Annotation\Type
+     */
+    public $type;
 }

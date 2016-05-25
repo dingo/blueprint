@@ -487,4 +487,60 @@ EOT;
 
         $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
     }
+
+    public function testGeneratingBlueprintsWithDataStructures()
+    {
+        $resources = new Collection([new Stubs\AccountController]);
+
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
+
+        $expected = <<<'EOT'
+FORMAT: 1A
+
+# testing
+
+# Account [/accounts]
+
+## Show all accounts. [GET /accounts]
+
+
++ Response 200 (application/json)
+
+    + Attributes
+        + success: true (boolean, required) - Status of the request
+        + data (array[Account], required) - The account's data
+
+## Show a specific account. [GET /accounts/1]
+
+
++ Response 200 (application/json)
+
+    + Attributes
+        + success: true (boolean, required) - Status of the request
+        + data (Deposit, required) - The account's data
+
+## Create a new account. [POST /accounts]
+
+
++ Request (application/json)
+
+    + Attributes (Account)
+
++ Response 200 (application/json)
+
+    + Attributes (Account)
+
+
+# Data Structures
+
+## Account (object)
+
++ name: Savings (string) - The account name
++ balance: 1200 (number) - The account balance
+
+## Deposit (Account)
+
+EOT;
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
+    }
 }
