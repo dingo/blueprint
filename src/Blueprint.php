@@ -482,7 +482,7 @@ class Blueprint
 
             $contents .= sprintf(
                 ' (%s) - %s',
-                $property->type,
+                $this->resolveType($property->type),
                 $property->description
             );
         });

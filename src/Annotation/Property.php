@@ -13,7 +13,7 @@ class Property
     public $identifier;
 
     /**
-     * @var string
+     * @var mixed
      */
     public $type = 'string';
 
