@@ -1,6 +1,6 @@
 {
-    "name": "dingo/blueprint",
-    "description": "API Blueprint documentation generator.",
+    "name": "drmyersii/dingo-blueprint",
+    "description": "My maintained version of Dingo Blueprint, a generator for valid API Blueprint documentation.",
     "keywords": ["blueprint", "api", "laravel", "dingo", "docs"],
     "license": "BSD-3-Clause",
     "authors": [
@@ -11,10 +11,10 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/support": "~5.1",
-        "illuminate/filesystem": "~5.1",
+        "illuminate/support": "~5.1 || 5.2.*",
+        "illuminate/filesystem": "~5.1 || 5.2.*",
         "doctrine/annotations": "1.2.*",
-        "phpdocumentor/reflection-docblock": "2.0.*"
+        "phpdocumentor/reflection-docblock": "2.0.* || 3.1.*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.0",
