@@ -4,7 +4,7 @@ namespace Dingo\Blueprint;
 
 use Illuminate\Support\Collection;
 use ReflectionClass;
-use phpDocumentor\Reflection\DocBlock;
+use PhpDocumentor\Reflection\DocBlock;
 
 class Resource extends Section
 {
@@ -144,7 +144,7 @@ class Resource extends Section
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
         $docblock = $factory->create($this->reflector);
 
-        $text = $docblock->getSummary() . "\n\n" . $docblock->getDescription();
+        $text = $docblock->getSummary()."\n\n".$docblock->getDescription();
 
         return $text;
     }
