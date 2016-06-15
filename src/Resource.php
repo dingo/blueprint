@@ -143,7 +143,7 @@ class Resource extends Section
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
         $docblock = $factory->create($this->reflector);
 
-        $text = $docblock->getSummary()."\n\n".$docblock->getDescription();
+        $text = $docblock->getSummary().$docblock->getDescription();
 
         return $text;
     }
