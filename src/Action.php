@@ -5,7 +5,6 @@ namespace Dingo\Blueprint;
 use RuntimeException;
 use ReflectionMethod;
 use Illuminate\Support\Collection;
-use PhpDocumentor\Reflection\DocBlock;
 
 class Action extends Section
 {
