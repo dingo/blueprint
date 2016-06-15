@@ -4,7 +4,7 @@ namespace Dingo\Blueprint;
 
 use Illuminate\Support\Collection;
 use ReflectionClass;
-use \phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\DocBlockFactory;
 
 class Resource extends Section
 {
