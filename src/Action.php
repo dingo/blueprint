@@ -5,7 +5,7 @@ namespace Dingo\Blueprint;
 use RuntimeException;
 use ReflectionMethod;
 use Illuminate\Support\Collection;
-use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlockFactory;
 
 class Action extends Section
 {
@@ -15,6 +15,13 @@ class Action extends Section
      * @var \ReflectionMethod
      */
     protected $reflector;
+
+    /**
+     * Resource DocBlock instance.
+     *
+     * @var \phpDocumentor\Reflection\DocBlock
+     */
+    protected $docBlock;
 
     /**
      * Annotations belonging to the action.
@@ -42,6 +49,9 @@ class Action extends Section
     {
         $this->reflector = $reflector;
         $this->annotations = $annotations;
+
+        $factory = DocBlockFactory::createInstance();
+        $this->docBlock = $factory->create($this->reflector);
     }
 
     /**
@@ -119,7 +129,7 @@ class Action extends Section
      */
     public function getIdentifier()
     {
-        return (new DocBlock($this->reflector))->getShortDescription();
+        return $this->docBlock->getSummary();
     }
 
     /**
@@ -129,7 +139,7 @@ class Action extends Section
      */
     public function getDescription()
     {
-        return (new DocBlock($this->reflector))->getLongDescription();
+        return $this->docBlock->getDescription()->render();
     }
 
     /**

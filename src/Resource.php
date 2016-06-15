@@ -4,7 +4,7 @@ namespace Dingo\Blueprint;
 
 use Illuminate\Support\Collection;
 use ReflectionClass;
-use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlockFactory;
 
 class Resource extends Section
 {
@@ -21,6 +21,13 @@ class Resource extends Section
      * @var \ReflectionClass
      */
     protected $reflector;
+
+    /**
+     * Resource DocBlock instance.
+     *
+     * @var \phpDocumentor\Reflection\DocBlock
+     */
+    protected $docBlock;
 
     /**
      * Collection of annotations belonging to a resource.
@@ -66,6 +73,9 @@ class Resource extends Section
         $this->reflector = $reflector;
         $this->annotations = $annotations;
         $this->actions = $actions;
+
+        $factory = DocBlockFactory::createInstance();
+        $this->docBlock = $factory->create($this->reflector);
 
         $this->setResourceOnActions();
     }
@@ -141,7 +151,7 @@ class Resource extends Section
      */
     public function getDescription()
     {
-        return (new DocBlock($this->reflector))->getText();
+        return $this->docBlock->getSummary().$this->docBlock->getDescription();
     }
 
     /**
