@@ -119,7 +119,10 @@ class Action extends Section
      */
     public function getIdentifier()
     {
-        return (new DocBlock($this->reflector))->getShortDescription();
+        $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
+        $docblock = $factory->create($this->reflector);
+
+        return $docblock->getSummary();
     }
 
     /**
@@ -129,7 +132,10 @@ class Action extends Section
      */
     public function getDescription()
     {
-        return (new DocBlock($this->reflector))->getLongDescription();
+        $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
+        $docblock = $factory->create($this->reflector);
+
+        return $docblock->getDescription();
     }
 
     /**

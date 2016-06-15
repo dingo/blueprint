@@ -141,7 +141,12 @@ class Resource extends Section
      */
     public function getDescription()
     {
-        return (new DocBlock($this->reflector))->getText();
+        $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
+        $docblock = $factory->create($this->reflector);
+
+        $text = $docblock->getSummary() . "\n\n" . $docblock->getDescription();
+
+        return $text;
     }
 
     /**
