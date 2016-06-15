@@ -1,6 +1,6 @@
 {
-    "name": "drmyersii/dingo-blueprint",
-    "description": "My maintained version of Dingo Blueprint, a generator for valid API Blueprint documentation.",
+    "name": "dingo/blueprint",
+    "description": "API Blueprint documentation generator.",
     "keywords": ["blueprint", "api", "laravel", "dingo", "docs"],
     "license": "BSD-3-Clause",
     "authors": [
