@@ -1,6 +1,6 @@
 {
-    "name": "dingo/blueprint",
-    "description": "API Blueprint documentation generator.",
+    "name": "nodes/blueprint",
+    "description": "Forked version of API Blueprint documentation generator.",
     "keywords": ["blueprint", "api", "laravel", "dingo", "docs"],
     "license": "BSD-3-Clause",
     "authors": [
@@ -29,12 +29,5 @@
         "psr-4": {
             "Dingo\\Blueprint\\Tests\\": "tests"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.2-dev"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
