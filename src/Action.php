@@ -25,7 +25,7 @@ class Action extends Section
     /**
      * Parent resource of the action.
      *
-     * @var \Dingo\Blueprint\Resource
+     * @var \Dingo\Blueprint\RestResource
      */
     protected $resource;
 
@@ -178,11 +178,11 @@ class Action extends Section
     /**
      * Set the parent resource on the action.
      *
-     * @param \Dingo\Blueprint\Resource $resource
+     * @param \Dingo\Blueprint\RestResource $resource
      *
      * @return void
      */
-    public function setResource(Resource $resource)
+    public function setResource(RestResource $resource)
     {
         $this->resource = $resource;
     }

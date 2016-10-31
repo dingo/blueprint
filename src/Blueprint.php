@@ -108,7 +108,7 @@ class Blueprint
 
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
 
-            return new Resource($controller->getName(), $controller, $annotations, $actions);
+            return new RestResource($controller->getName(), $controller, $annotations, $actions);
         });
 
         $contents = $this->generateContentsFromResources($resources, $name);
@@ -268,11 +268,11 @@ class Blueprint
      *
      * @param string                               $contents
      * @param \Dingo\Blueprint\Annotation\Response $response
-     * @param \Dingo\Blueprint\Resource            $resource
+     * @param \Dingo\Blueprint\RestResource            $resource
      *
      * @return void
      */
-    protected function appendResponse(&$contents, Annotation\Response $response, Resource $resource)
+    protected function appendResponse(&$contents, Annotation\Response $response, RestResource $resource)
     {
         $this->appendSection($contents, sprintf('Response %s', $response->statusCode));
 
@@ -298,11 +298,11 @@ class Blueprint
      *
      * @param string                              $contents
      * @param \Dingo\Blueprint\Annotation\Request $request
-     * @param \Dingo\Blueprint\Resource           $resource
+     * @param \Dingo\Blueprint\RestResource           $resource
      *
      * @return void
      */
-    protected function appendRequest(&$contents, $request, Resource $resource)
+    protected function appendRequest(&$contents, $request, RestResource $resource)
     {
         $this->appendSection($contents, 'Request');
 

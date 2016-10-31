@@ -5,7 +5,7 @@ namespace Dingo\Blueprint;
 use Illuminate\Support\Collection;
 use ReflectionClass;
 
-class Resource extends Section
+class RestResource extends Section
 {
     /**
      * Resource identifier.
