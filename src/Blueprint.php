@@ -132,7 +132,7 @@ class Blueprint
 
         $contents .= $this->getFormat();
         $contents .= $this->line(1);
-        $contents .= 'HOST: ' . \Config::get('api.protocol') . '://' . \Config::get('api.domain') . '/' . \Config::get('api.prefix');
+        if (class_exists('\Illuminate\Config\Repository')) $contents .= 'HOST: ' . \Config::get('api.protocol') . '://' . \Config::get('api.domain') . '/' . \Config::get('api.prefix');
         $contents .= $this->line(2);
         $contents .= sprintf('# %s', $name);
         $contents .= $this->line(2);
