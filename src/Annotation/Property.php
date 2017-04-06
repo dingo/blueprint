@@ -5,7 +5,7 @@ namespace Dingo\Blueprint\Annotation;
 /**
  * @Annotation
  */
-class Attribute
+class Property
 {
     /**
      * @var string
@@ -16,11 +16,6 @@ class Attribute
      * @var mixed
      */
     public $type = 'string';
-
-    /**
-     * @var bool
-     */
-    public $required = false;
 
     /**
      * @var string
