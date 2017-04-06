@@ -2,6 +2,7 @@
 
 namespace Dingo\Blueprint;
 
+use Dingo\Blueprint\Annotation\DataStructures;
 use Illuminate\Support\Collection;
 use ReflectionClass;
 
@@ -105,6 +106,18 @@ class Resource extends Section
     public function getActions()
     {
         return $this->actions;
+    }
+
+    /**
+     * Get the data structures belonging to the resource.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDataStructures()
+    {
+        return $this->annotations->filter(function ($annotation) {
+            return $annotation instanceof DataStructures;
+        });
     }
 
     /**

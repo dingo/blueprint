@@ -2,6 +2,7 @@
 
 namespace Dingo\Blueprint;
 
+use Dingo\Blueprint\Annotation\Type;
 use ReflectionClass;
 use RuntimeException;
 use Illuminate\Support\Str;
@@ -135,7 +136,9 @@ class Blueprint
         $contents .= sprintf('# %s', $name);
         $contents .= $this->line(2);
 
-        $resources->each(function ($resource) use (&$contents) {
+        $globalDataStructures = new Collection();
+
+        $resources->each(function ($resource) use (&$contents, $globalDataStructures) {
             if ($resource->getActions()->isEmpty()) {
                 return;
             }
@@ -149,6 +152,10 @@ class Blueprint
 
             if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
                 $this->appendParameters($contents, $parameters);
+            }
+
+            if (($dataStructures = $resource->getDataStructures()) && ! $dataStructures->isEmpty()) {
+                $globalDataStructures->push($dataStructures);
             }
 
             $resource->getActions()->each(function ($action) use (&$contents, $resource) {
@@ -192,6 +199,15 @@ class Blueprint
             $contents .= $this->line(2);
         });
 
+        if (! $globalDataStructures->isEmpty()) {
+            $contents .= $this->line(1);
+            $contents .= '# Data Structures';
+
+            $globalDataStructures->each(function ($dataStructure) use (&$contents) {
+                $this->appendDataStructures($contents, $dataStructure);
+            });
+        }
+
         return stripslashes(trim($contents));
     }
 
@@ -217,13 +233,33 @@ class Blueprint
                 $contents .= sprintf(': %s', $attribute->sample);
             }
 
+            $arrayType = false;
+            if (is_array($attribute->type)) {
+                $arrayType = true;
+                $attribute->type = array_shift($attribute->type);
+            }
+
+            $type = $this->resolveType($attribute->type);
+
             $contents .= sprintf(
                 ' (%s, %s) - %s',
-                $attribute->type,
+                $arrayType ? "array[${type}]" : $type,
                 $attribute->required ? 'required' : 'optional',
                 $attribute->description
             );
         });
+    }
+
+    /**
+     * Append a type attribute to a resource or action.
+     *
+     * @param string $contents
+     * @param Type   $type
+     * @param int    $indent
+     */
+    protected function appendType(&$contents, Type $type, $indent = 0)
+    {
+        $this->appendSection($contents, sprintf('Attributes (%s)', $type->identifier), $indent);
     }
 
     /**
@@ -284,7 +320,9 @@ class Blueprint
             $this->appendHeaders($contents, array_merge($resource->getResponseHeaders(), $response->headers));
         }
 
-        if (isset($response->attributes)) {
+        if (isset($response->type)) {
+            $this->appendType($contents, $response->type, 1);
+        } elseif (isset($response->attributes)) {
             $this->appendAttributes($contents, collect($response->attributes), 1);
         }
 
@@ -316,7 +354,9 @@ class Blueprint
             $this->appendHeaders($contents, array_merge($resource->getRequestHeaders(), $request->headers));
         }
 
-        if (isset($request->attributes)) {
+        if (isset($request->type)) {
+            $this->appendType($contents, $request->type, 1);
+        } elseif (isset($request->attributes)) {
             $this->appendAttributes($contents, collect($request->attributes), 1);
         }
 
@@ -386,6 +426,66 @@ class Blueprint
         $contents .= $this->line($lines);
         $contents .= $this->tab($indent);
         $contents .= '+ '.$name;
+    }
+
+    /**
+     * Append data structures.
+     *
+     * @param $contents
+     * @param $allStructures
+     */
+    protected function appendDataStructures(&$contents, $allStructures)
+    {
+        $allStructures->each(function ($dataStructures) use (&$contents) {
+            collect($dataStructures->value)->each(function ($type) use (&$contents) {
+
+                $contents .= $this->line(2);
+                $contents .= sprintf('## %s (%s)', $type->identifier, $this->resolveType($type->type));
+                $contents .= $this->line(1);
+
+                if (isset($type->properties)) {
+                    $this->appendProperties($contents, collect($type->properties), -1, false);
+                }
+            });
+        });
+    }
+
+    /**
+     * Resolves the name of a type from either a string or a Type class.
+     *
+     * @param string|Type $type
+     *
+     * @return string
+     */
+    protected function resolveType($type)
+    {
+        return $type instanceof Type ? $type->identifier : $type;
+    }
+
+    /**
+     * Append the properties to a type.
+     *
+     * @param string                         $contents
+     * @param \Illuminate\Support\Collection $properties
+     *
+     * @return void
+     */
+    protected function appendProperties(&$contents, Collection $properties)
+    {
+        $properties->each(function ($property) use (&$contents) {
+            $contents .= $this->line();
+            $contents .= sprintf('+ %s', $property->identifier);
+
+            if ($property->sample) {
+                $contents .= sprintf(': %s', $property->sample);
+            }
+
+            $contents .= sprintf(
+                ' (%s) - %s',
+                $this->resolveType($property->type),
+                $property->description
+            );
+        });
     }
 
     /**
