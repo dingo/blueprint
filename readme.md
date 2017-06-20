@@ -18,6 +18,8 @@ Some index method phpdoc example:
 /**
  * Products
  *
+ * @Group("Products")
+ * @Versions({"v1"})
  * @Resource("Products", uri="/products")
 */
 class ProductsController extends ApiController

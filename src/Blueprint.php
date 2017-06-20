@@ -84,7 +84,9 @@ class Blueprint
     {
         $this->includePath = $includePath;
 
-        $resources = $controllers->map(function ($controller) use ($version) {
+        $groups = new Collection;
+
+        $resources = $controllers->map(function ($controller) use ($version, $groups) {
             $controller = $controller instanceof ReflectionClass ? $controller : new ReflectionClass($controller);
 
             $actions = new Collection;
@@ -108,10 +110,33 @@ class Blueprint
 
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
 
-            return new Resource($controller->getName(), $controller, $annotations, $actions);
+            $versions = $annotations->filter(function($item) {
+                return $item instanceof Annotation\Versions;
+            })->first();
+
+            // if the group does not have the intended version, the group is skipped
+            if( isset($versions->value) && in_array($version, $versions->value) )
+            {
+                $resource = new Resource($controller->getName(), $controller, $annotations, $actions);
+
+                // Find or create group and add resource to it
+                $group = $groups->where('identifier', $resource->getGroupIdentifier())->first() ?: new Group($resource);
+                $group->addResource($resource);
+                if (! $resource->getGroupIdentifier()) {
+                    // Prepend resource group with no identifier so this group appears first
+                    $groups->contains($group) ?: $groups->prepend($group);
+                } else {
+                    $groups->contains($group) ?: $groups->push($group);
+                }
+
+                return $resource;
+            }
+
+
+            return false;
         });
 
-        $contents = $this->generateContentsFromResources($resources, $name);
+        $contents = $this->generateContentsFromGroups($groups, $name);
 
         $this->includePath = null;
 
@@ -119,14 +144,14 @@ class Blueprint
     }
 
     /**
-     * Generate the documentation contents from the resources collection.
+     * Generate the documentation contents from the groups collection.
      *
-     * @param \Illuminate\Support\Collection $resources
+     * @param \Illuminate\Support\Collection $groups
      * @param string                         $name
      *
      * @return string
      */
-    protected function generateContentsFromResources(Collection $resources, $name)
+    protected function generateContentsFromGroups(Collection $groups, $name)
     {
         $contents = '';
 
@@ -135,61 +160,70 @@ class Blueprint
         $contents .= sprintf('# %s', $name);
         $contents .= $this->line(2);
 
-        $resources->each(function ($resource) use (&$contents) {
-            if ($resource->getActions()->isEmpty()) {
-                return;
-            }
+        $groups->each(function ($group) use (&$contents) {
 
-            $contents .= $resource->getDefinition();
-
-            if ($description = $resource->getDescription()) {
-                $contents .= $this->line();
-                $contents .= $description;
-            }
-
-            if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
-                $this->appendParameters($contents, $parameters);
-            }
-
-            $resource->getActions()->each(function ($action) use (&$contents, $resource) {
+            if ($group->getIdentifier()) {
+                $contents .= $group->getDefinition();
                 $contents .= $this->line(2);
-                $contents .= $action->getDefinition();
+            }
 
-                if ($description = $action->getDescription()) {
+            $group->getResources()->each(function ($resource) use (&$contents) {
+
+                if ($resource->getActions()->isEmpty()) {
+                    return;
+                }
+
+                $contents .= $resource->getDefinition();
+
+                if ($description = $resource->getDescription()) {
                     $contents .= $this->line();
                     $contents .= $description;
                 }
 
-                if (($attributes = $action->getAttributes()) && ! $attributes->isEmpty()) {
-                    $this->appendAttributes($contents, $attributes);
-                }
-
-                if (($parameters = $action->getParameters()) && ! $parameters->isEmpty()) {
+                if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
                     $this->appendParameters($contents, $parameters);
                 }
 
-                if ($request = $action->getRequest()) {
-                    $this->appendRequest($contents, $request, $resource);
-                }
+                $resource->getActions()->each(function ($action) use (&$contents, $resource) {
+                    $contents .= $this->line(2);
+                    $contents .= $action->getDefinition();
 
-                if ($response = $action->getResponse()) {
-                    $this->appendResponse($contents, $response, $resource);
-                }
+                    if ($description = $action->getDescription()) {
+                        $contents .= $this->line();
+                        $contents .= $description;
+                    }
 
-                if ($transaction = $action->getTransaction()) {
-                    foreach ($transaction->value as $value) {
-                        if ($value instanceof Annotation\Request) {
-                            $this->appendRequest($contents, $value, $resource);
-                        } elseif ($value instanceof Annotation\Response) {
-                            $this->appendResponse($contents, $value, $resource);
-                        } else {
-                            throw new RuntimeException('Unsupported annotation type given in transaction.');
+                    if (($attributes = $action->getAttributes()) && ! $attributes->isEmpty()) {
+                        $this->appendAttributes($contents, $attributes);
+                    }
+
+                    if (($parameters = $action->getParameters()) && ! $parameters->isEmpty()) {
+                        $this->appendParameters($contents, $parameters);
+                    }
+
+                    if ($request = $action->getRequest()) {
+                        $this->appendRequest($contents, $request, $resource);
+                    }
+
+                    if ($response = $action->getResponse()) {
+                        $this->appendResponse($contents, $response, $resource);
+                    }
+
+                    if ($transaction = $action->getTransaction()) {
+                        foreach ($transaction->value as $value) {
+                            if ($value instanceof Annotation\Request) {
+                                $this->appendRequest($contents, $value, $resource);
+                            } elseif ($value instanceof Annotation\Response) {
+                                $this->appendResponse($contents, $value, $resource);
+                            } else {
+                                throw new RuntimeException('Unsupported annotation type given in transaction.');
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            $contents .= $this->line(2);
+                $contents .= $this->line(2);
+            });
         });
 
         return stripslashes(trim($contents));
@@ -405,7 +439,7 @@ class Blueprint
                 $path .= '.json';
             }
 
-            $body = $this->files->get($this->includePath.'/'.$path);
+            $body = $this->files->get($includePath.'/'.$path);
 
             json_decode($body);
 

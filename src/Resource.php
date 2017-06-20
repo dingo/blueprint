@@ -4,6 +4,7 @@ namespace Dingo\Blueprint;
 
 use Illuminate\Support\Collection;
 use ReflectionClass;
+use phpDocumentor\Reflection\DocBlock;
 
 class Resource extends Section
 {
@@ -94,7 +95,31 @@ class Resource extends Section
             $definition = $method.' '.$definition;
         }
 
-        return '# '.$this->getIdentifier().($definition == '/' ? '' : ' ['.$definition.']');
+        $level = $this->getGroupIdentifier() ? '## ' : '# ';
+
+        return $level.$this->getIdentifier().($definition == '/' ? '' : ' ['.$definition.']');
+    }
+
+    /**
+     * Get the resource group annotation.
+     *
+     * @return \Dingo\Blueprint\Annotation\Group
+     */
+    public function getGroupAnnotation()
+    {
+        return $this->getAnnotationByType('Group');
+    }
+
+    /**
+     * Get the resource group.
+     *
+     * @return string
+     */
+    public function getGroupIdentifier()
+    {
+        if (($annotation = $this->getGroupAnnotation()) && isset($annotation->identifier)) {
+            return $annotation->identifier;
+        }
     }
 
     /**
@@ -142,9 +167,7 @@ class Resource extends Section
     {
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
         $docblock = $factory->create($this->reflector);
-
         $text = $docblock->getSummary().$docblock->getDescription();
-
         return $text;
     }
 
