@@ -223,7 +223,19 @@ class Blueprint
                 $attribute->required ? 'required' : 'optional',
                 $attribute->description
             );
+
+            if (isset($attribute->default)) {
+                $this->appendSection($contents, sprintf('Default: %s', $attribute->default), 2, 1);
+            }
+
+            if (isset($attribute->members)) {
+                $this->appendSection($contents, 'Members', 2, 1);
+                foreach ($attribute->members as $member) {
+                    $this->appendSection($contents, sprintf('`%s` - %s', $member->identifier, $member->description), 3, 1);
+                }
+            }
         });
+
     }
 
     /**
