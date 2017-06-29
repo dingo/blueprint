@@ -487,4 +487,27 @@ EOT;
 
         $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null));
     }
+
+    public function testGeneratingBlueprintOverview()
+    {
+        $resources = new Collection([new Stubs\ActivityController]);
+
+        $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
+
+        $expected = <<<'EOT'
+FORMAT: 1A
+
+# testing
+
+Overview content here.
+
+# Activity
+
+## Show all activities. [GET /activity]
+EOT;
+
+        $this->assertEquals(trim($expected), $blueprint->generate($resources, 'testing', 'v1', null, __DIR__.'/Files/overview.apib'));
+
+
+    }
 }
