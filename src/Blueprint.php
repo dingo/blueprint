@@ -71,12 +71,13 @@ class Blueprint
     }
 
     /**
-     * Generate documentation with the name and version.
+     * Generate documentation with the name, version and optional overview content.
      *
      * @param \Illuminate\Support\Collection $controllers
      * @param string                         $name
      * @param string                         $version
      * @param string                         $includePath
+     * @param string                         $overviewFile
      *
      * @return bool
      */
