@@ -9,6 +9,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Dingo\Blueprint\Annotation\Attributes;
+use Dingo\Blueprint\Annotation\Attribute;
+use Dingo\Blueprint\Annotation\Member;
+use Dingo\Blueprint\Annotation\Parameters;
+use Dingo\Blueprint\Annotation\Parameter;
 
 class Blueprint
 {
@@ -100,12 +105,12 @@ class Blueprint
                 }
 
                 if ($annotations = $this->reader->getMethodAnnotations($method)) {
-                    if (! $actions->contains($method)) {
+                    if (!$actions->contains($method)) {
+                        $annotations = $this->fillAnnotations($annotations, $method);
                         $actions->push(new Action($method, new Collection($annotations)));
                     }
                 }
             }
-
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
 
             return new Resource($controller->getName(), $controller, $annotations, $actions);
@@ -116,6 +121,182 @@ class Blueprint
         $this->includePath = null;
 
         return $contents;
+    }
+
+    /**
+     * Add the parameters and attributes objects to annotations if needed
+     *
+     * @param array  $annotations the annotations to fill
+     * @param object $method      the method we are working on
+     *
+     * @return array
+     */
+    private function fillAnnotations(array $annotations, $method)
+    {
+        $controllerName = substr($method->class, strrpos($method->class, '\\'));
+        if ($controllerName != '\\OAuthController') {
+            $rulesClass = 'App\\Validators\\Rules' . $controllerName;
+            $parameters = $this->extractParams($this->getMethodUri($annotations));
+
+            $annotations[] = $this->getAttributes($rulesClass::$rules[$method->name], $parameters);
+            $annotations[] = $this->getParameters($rulesClass::$rules[$method->name], $parameters);
+        }
+        return $annotations;
+    }
+
+    /**
+     * Get the URI of a method from it's annotations
+     *
+     * @param array $annotations
+     *
+     * @return string
+     */
+    private function getMethodUri(array $annotations)
+    {
+        return array_first($annotations, function ($key, $annotation) {
+            $type = 'Dingo\\Blueprint\\Annotation\\Method\\Method';
+            return is_object($annotation) ? $annotation instanceof $type : $key instanceof $type;
+        })->uri;
+    }
+
+    /**
+     * Gets a list of all parameters name from mutiple arrays extracted from the uri
+     *
+     * @param array $uriParams
+     *
+     * @return array
+     */
+    private function extractParams($uri) {
+        preg_match_all("/{(.*?)}/", $uri, $matches);
+        return $this->parseParams($matches[1]);
+    }
+
+    /**
+     * Parse the params as they are in the uri into correct array
+     *
+     * @param array $uriParams
+     *
+     * @return array
+     */ 
+    private function parseParams($uriParams)
+    {
+        $params    = [];
+
+        foreach ($uriParams as $uriParam) {
+            ltrim($uriParam, '?');
+            $uriParamExploded = explode(',', $uriParam);
+            foreach ($uriParamExploded as $param) {
+                $params[] = $param;
+            }
+        }
+        return $params;
+    }
+
+    /**
+     * Transforms a laravel validation array in Attribute for dingo blueprint
+     *
+     * @param array $rules
+     *
+     * @return array
+     */
+    private function getAttributes($rules, $parameters)
+    {
+        $attributes = new Attributes();
+
+        foreach ($rules as $identifier => $attrInfos) {
+            if (in_array($identifier, $parameters)) {
+                continue;
+            }
+            $attribute = $this->parseInfos(new Attribute(), $attrInfos);
+            $attribute->identifier = $identifier;
+
+            $attributes->value[] = $attribute;
+        }
+        return $attributes->value ? $attributes : null;
+    }
+
+    /**
+     * Transforms a laravel validation array in Parameter for dingo blueprint
+     *
+     * @param array $rules
+     *
+     * @return array
+     */
+    private function getParameters($rules, $params)
+    {
+        $parameters = new Parameters();
+
+        foreach ($rules as $identifier => $paramInfos) {
+            if (!in_array($identifier, $params)) {
+                continue;
+            }
+            $parameter = $this->parseInfos(new Parameter(), $paramInfos);
+            $parameter->identifier = $identifier;
+
+            $parameters->value[] = $parameter;
+        }
+        return $parameters->value ? $parameters : null;
+    }
+
+    /**
+     * Parse the validation array to fill a parameter or an attribute
+     *
+     * @param Parameter|Attribute $toFill
+     * @param array               $infos
+     *
+     * @return Parameter|Attribute
+     */
+    private function parseInfos($toFill, $infos)
+    {
+        $toFill->description = $infos['description'];
+
+        $propertiesExploded = explode('|', $infos['rules']);
+        foreach ($propertiesExploded as $property) {
+            switch ($property) {
+                case 'numeric':
+                case 'integer':
+                    $toFill->type = 'number';
+                    continue 2;
+                case 'array':
+                    $toFill->type = 'object';
+                    continue 2;
+                case 'present':
+                case 'required':
+                    $toFill->required = true;
+                    continue 2;
+            }
+            $tofill = $this->parseComplexProperties($toFill, $property);
+        }
+        return $toFill;
+    }
+
+    /**
+     * Parse the property to find enum or defaults
+     * 
+     * @param Parameter|Attribute $toFill
+     * @param string              $property
+     *
+     * @return Parameter|Attribute
+     */
+    private function parseComplexProperties($toFill, $property)
+    {
+        $propertyExploded = explode(':', $property);
+        if (count($propertyExploded) > 1) {
+            switch ($propertyExploded[0]) {
+                case 'default':
+                    $toFill->default = $propertyExploded[1];
+                    break;
+                case 'in':
+                    $members = explode(',', $propertyExploded[1]);
+                    foreach ($members as $identifier) {
+                        $member = new Member();
+                        $member->identifier = $identifier;
+                        $toFill->members[] = $member;
+                    }
+                    break;
+            }
+        }
+        return $toFill;
     }
 
     /**
@@ -131,6 +312,7 @@ class Blueprint
         $contents = '';
 
         $contents .= $this->getFormat();
+        $contents .= $this->getHost();
         $contents .= $this->line(2);
         $contents .= sprintf('# %s', $name);
         $contents .= $this->line(2);
@@ -209,9 +391,11 @@ class Blueprint
         $this->appendSection($contents, 'Attributes', $indent);
 
         $attributes->each(function ($attribute) use (&$contents, $indent) {
+            $explodedIdentifier = explode('.', $attribute->identifier);
+            $indent += count($explodedIdentifier);
             $contents .= $this->line();
-            $contents .= $this->tab(1 + $indent);
-            $contents .= sprintf('+ %s', $attribute->identifier);
+            $contents .= $this->tab($indent);
+            $contents .= sprintf('+ %s', $explodedIdentifier[count($explodedIdentifier) - 1]);
 
             if ($attribute->sample) {
                 $contents .= sprintf(': %s', $attribute->sample);
@@ -219,19 +403,19 @@ class Blueprint
 
             $contents .= sprintf(
                 ' (%s, %s) - %s',
-                $attribute->type,
+                $attribute->members ? sprintf('enum[%s]', $attribute->type) : $attribute->type,
                 $attribute->required ? 'required' : 'optional',
                 $attribute->description
             );
 
             if (isset($attribute->default)) {
-                $this->appendSection($contents, sprintf('Default: %s', $attribute->default), 2, 1);
+                $this->appendSection($contents, sprintf('Default: %s', $attribute->default), $indent + 1, 1);
             }
 
             if (isset($attribute->members)) {
-                $this->appendSection($contents, 'Members', 2, 1);
+                $this->appendSection($contents, 'Members', $indent + 1, 1);
                 foreach ($attribute->members as $member) {
-                    $this->appendSection($contents, sprintf('`%s` - %s', $member->identifier, $member->description), 3, 1);
+                    $this->appendSection($contents, sprintf('`%s` - %s', $member->identifier, $member->description), $indent + 2, 1);
                 }
             }
         });
@@ -253,10 +437,14 @@ class Blueprint
         $parameters->each(function ($parameter) use (&$contents) {
             $contents .= $this->line();
             $contents .= $this->tab();
+            $contents .= sprintf('+ %s', $parameter->identifier);
+
+            if ($parameter->example) {
+                $contents .= sprintf(': %s', $parameter->example);
+            }
+
             $contents .= sprintf(
-                '+ %s:%s (%s, %s) - %s',
-                $parameter->identifier,
-                $parameter->example ? " `{$parameter->example}`" : '',
+                ' (%s, %s) - %s',
                 $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
                 $parameter->required ? 'required' : 'optional',
                 $parameter->description
@@ -324,6 +512,9 @@ class Blueprint
 
         $contents .= ' ('.$request->contentType.')';
 
+        if (!isset($request->headers['Authorization'])) {
+            $request->headers['Authorization'] = 'OAuth: oauth_consumer_key={consumer_key},oauth_signature={consumer_secret}&{user_secret},oauth_signature_method=PLAINTEXT,oauth_nonce={random_string},oauth_timestamp={current_timestamp},oauth_token={user_token}';
+        }
         if (! empty($request->headers) || $resource->hasRequestHeaders()) {
             $this->appendHeaders($contents, array_merge($resource->getRequestHeaders(), $request->headers));
         }
@@ -465,5 +656,12 @@ class Blueprint
     protected function getFormat()
     {
         return 'FORMAT: 1A';
+    }
+
+    private function getHost()
+    {
+        if (class_exists('\Illuminate\Config\Repository')) {
+            return $this->line(1) . 'HOST: https://' . app('config')->get('api.domain') . '/' . app('config')->get('api.prefix');
+        }
     }
 }
