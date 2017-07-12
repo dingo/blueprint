@@ -5,6 +5,8 @@ namespace Dingo\Blueprint\Tests\Stubs;
 /**
  * User Photos Resource.
  *
+ * @Group("User")
+ * @Versions({"v1", "v2"})
  * @Resource("User Photos", uri="/users/{userId}/photos")
  * @Parameters({
  *      @Parameter("userId", description="ID of user who owns the photos.", type="integer", required=true)

@@ -53,9 +53,11 @@ FORMAT: 1A
 
 # testing
 
-# Activity
+# Group Activity
 
-## Show all activities. [GET /activity]
+## Activity
+
+### Show all activities. [GET /activity]
 EOT;
 
         public function testGetAnnotationByTypeInLaravel52x()

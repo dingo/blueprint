@@ -60,7 +60,9 @@ class Action extends Section
             $definition = $identifier.' ['.$definition.']';
         }
 
-        return '## '.$definition;
+        $level = $this->resource->getGroupIdentifier() ? '### ' : '## ';
+
+        return $level.$definition;
     }
 
     /**
