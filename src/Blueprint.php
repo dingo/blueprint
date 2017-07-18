@@ -138,8 +138,11 @@ class Blueprint
             $rulesClass = 'App\\Validators\\Rules' . $controllerName;
             $parameters = $this->extractParams($this->getMethodUri($annotations));
 
-            $annotations[] = $this->getAttributes($rulesClass::$rules[$method->name], $parameters);
-            $annotations[] = $this->getParameters($rulesClass::$rules[$method->name], $parameters);
+            $rules = $rulesClass::$rules[$method->name];
+            if (count($rules)) {
+                $annotations[] = $this->getAttributes($rules, $parameters);
+                $annotations[] = $this->getParameters($rules, $parameters);
+            }
         }
         return $annotations;
     }
@@ -203,15 +206,17 @@ class Blueprint
     {
         $attributes = new Attributes();
 
-        foreach ($rules as $identifier => $attrInfos) {
+        reset($rules);
+        do {
+            $identifier = key($rules);
             if (in_array($identifier, $parameters)) {
                 continue;
             }
-            $attribute = $this->parseInfos(new Attribute(), $attrInfos);
+            $attribute = $this->parseInfos(new Attribute(), $rules);
             $attribute->identifier = $identifier;
 
             $attributes->value[] = $attribute;
-        }
+        } while (next($rules));
         return $attributes->value ? $attributes : null;
     }
 
@@ -226,28 +231,58 @@ class Blueprint
     {
         $parameters = new Parameters();
 
-        foreach ($rules as $identifier => $paramInfos) {
+        reset($rules);
+        do {
+            $identifier = key($rules);
             if (!in_array($identifier, $params)) {
                 continue;
             }
-            $parameter = $this->parseInfos(new Parameter(), $paramInfos);
+            $parameter = $this->parseInfos(new Parameter(), $rules);
             $parameter->identifier = $identifier;
 
             $parameters->value[] = $parameter;
-        }
+        } while (next($rules));
         return $parameters->value ? $parameters : null;
+    }
+
+    /**
+     * Determine if an array in a laravel validator is an array or an object in apiary
+     *
+     * @param array $rules
+     *
+     * @return string object or array
+     */
+    private function findArrayType(array $rules)
+    {
+        $key = key($rules);
+        $key2 = false;
+        if (next($rules)) {
+            $key2 = key($rules);
+        }
+        $key3 = false;
+        if (next($rules)) {
+            $key3 = key($rules);
+        }
+        $toMatch = '/^' . preg_quote($key) . '\.[a-zA-Z0-9]*$/';
+        if ($key2 && preg_match($toMatch, $key2) === 1 && $key3 && preg_match($toMatch, $key2)) {
+            $type = 'object';
+        } else {
+            $type = 'array';
+        }
+        return $type;
     }
 
     /**
      * Parse the validation array to fill a parameter or an attribute
      *
      * @param Parameter|Attribute $toFill
-     * @param array               $infos
+     * @param array               $rules
      *
      * @return Parameter|Attribute
      */
-    private function parseInfos($toFill, $infos)
+    private function parseInfos($toFill, array $rules)
     {
+        $infos = current($rules);
         $toFill->description = $infos['description'];
 
         $propertiesExploded = explode('|', $infos['rules']);
@@ -258,7 +293,7 @@ class Blueprint
                     $toFill->type = 'number';
                     continue 2;
                 case 'array':
-                    $toFill->type = 'object';
+                    $toFill->type = findArrayType($rules);
                     continue 2;
                 case 'present':
                 case 'required':
@@ -395,7 +430,8 @@ class Blueprint
             $indent += count($explodedIdentifier);
             $contents .= $this->line();
             $contents .= $this->tab($indent);
-            $contents .= sprintf('+ %s', $explodedIdentifier[count($explodedIdentifier) - 1]);
+            $identifier = $explodedIdentifier[count($explodedIdentifier) - 1];
+            $contents .= sprintf('+ %s', $identifier == '*' ? '' : $identifier);
 
             if ($attribute->sample) {
                 $contents .= sprintf(': %s', $attribute->sample);
@@ -515,7 +551,7 @@ class Blueprint
         if (!isset($request->headers['Authorization'])) {
             $request->headers['Authorization'] = 'OAuth: oauth_consumer_key={consumer_key},oauth_signature={consumer_secret}&{user_secret},oauth_signature_method=PLAINTEXT,oauth_nonce={random_string},oauth_timestamp={current_timestamp},oauth_token={user_token}';
         }
-        if (! empty($request->headers) || $resource->hasRequestHeaders()) {
+        if (!empty($request->headers) || $resource->hasRequestHeaders()) {
             $this->appendHeaders($contents, array_merge($resource->getRequestHeaders(), $request->headers));
         }
 
