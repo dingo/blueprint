@@ -293,7 +293,7 @@ class Blueprint
                     $toFill->type = 'number';
                     continue 2;
                 case 'array':
-                    $toFill->type = findArrayType($rules);
+                    $toFill->type = $this->findArrayType($rules);
                     continue 2;
                 case 'present':
                 case 'required':
