@@ -186,7 +186,7 @@ class Blueprint
         $params    = [];
 
         foreach ($uriParams as $uriParam) {
-            ltrim($uriParam, '?');
+            $uriParam = ltrim($uriParam, '?');
             $uriParamExploded = explode(',', $uriParam);
             foreach ($uriParamExploded as $param) {
                 $params[] = $param;
