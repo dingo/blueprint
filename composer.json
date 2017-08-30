@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/support": "5.1.* || 5.2.* || 5.3.* || 5.4.*",
-        "illuminate/filesystem": "5.1.* || 5.2.* || 5.3.* || 5.4.*",
+        "illuminate/support": "^5.1",
+        "illuminate/filesystem": "^5.1",
         "doctrine/annotations": "~1.2",
         "phpdocumentor/reflection-docblock": "3.1.*"
     },
