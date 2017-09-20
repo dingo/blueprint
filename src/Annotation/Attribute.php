@@ -28,7 +28,17 @@ class Attribute
     public $description;
 
     /**
+     * @var string
+     */
+    public $default;
+
+    /**
      * @var mixed
      */
     public $sample;
+
+    /**
+     * @array<Member>
+     */
+    public $members;
 }
