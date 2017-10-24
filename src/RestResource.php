@@ -141,7 +141,10 @@ class RestResource extends Section
     public function getDescription()
     {
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
-        $docblock = $factory->create($this->reflector);
+
+        if (!($docblock = $factory->create($this->reflector))) {
+            return '';
+        }
 
         $text = $docblock->getSummary().$docblock->getDescription();
 
