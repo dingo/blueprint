@@ -142,13 +142,20 @@ class RestResource extends Section
     {
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
 
-        if (!($docblock = $factory->create($this->reflector))) {
-            return '';
+        try {
+            $docblock = $factory->create($this->reflector);
+
+            if (!$docblock)
+                return '';
+
+            $text = $docblock->getSummary() . $docblock->getDescription();
+
+            return $text;
         }
 
-        $text = $docblock->getSummary().$docblock->getDescription();
-
-        return $text;
+        catch (\InvalidArgumentException $e) {
+            return '';
+        }
     }
 
     /**
