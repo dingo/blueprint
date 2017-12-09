@@ -69,6 +69,10 @@ class RestResource extends Section
         $this->setResourceOnActions();
     }
 
+    public function getAnnotations() {
+        return $this->annotations;
+    }
+
     /**
      * Set the resource on each of the actions.
      *
