@@ -303,7 +303,7 @@ class Blueprint
                     "# %s (%s) \n%s\n",
                     $type->name,
                     $type->derivedFrom,
-                    $type->description ? $type->description : ''
+                    $type->description ?? ''
                 );
 
                 if ($type->properties !== NULL) {
@@ -311,13 +311,13 @@ class Blueprint
                         "# Properties\n",
                         $type->name,
                         $type->derivedFrom,
-                        $type->description ? $type->description : ''
+                        $type->description ?? ''
                     );
                     foreach ($type->properties as $member) {
                         $this->appendSection($contents, sprintf(
                             '`%s` (%s) - %s',
                             $member->name,
-                            $member->type ? $member->type : static::T_STRING,
+                            $member->type ?? static::T_STRING,
                             $member->sample),
                             1, 0
                         );
