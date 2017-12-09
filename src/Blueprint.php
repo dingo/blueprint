@@ -2,7 +2,6 @@
 
 namespace Dingo\Blueprint;
 
-use App\Http\Controllers\Admin\SpendingController;
 use Dingo\Blueprint\Annotation\Attribute;
 use Dingo\Blueprint\Annotation\NamedType;
 use ReflectionClass;
