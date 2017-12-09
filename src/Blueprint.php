@@ -300,24 +300,31 @@ class Blueprint
                 $contents .= $this->line();
                 $contents .= $this->tab(0);
                 $contents .= sprintf(
-                    "# %s (%s) \n%s\n\n",
+                    "# %s (%s) \n%s\n",
                     $type->name,
                     $type->derivedFrom,
-                    $type->description ?? ''
+                    $type->description ? $type->description : ''
                 );
 
                 if ($type->properties !== NULL) {
-                    $this->appendSection($contents, '## Properties', 0, 1, '');
+                    $contents .= sprintf(
+                        "# Properties\n",
+                        $type->name,
+                        $type->derivedFrom,
+                        $type->description ? $type->description : ''
+                    );
                     foreach ($type->properties as $member) {
                         $this->appendSection($contents, sprintf(
                             '`%s` (%s) - %s',
                             $member->name,
-                            $member->type ?? static::T_STRING,
+                            $member->type ? $member->type : static::T_STRING,
                             $member->sample),
                             1, 0
                         );
                     }
                 }
+
+                $contents .= $this->line(2);
             });
     }
 
