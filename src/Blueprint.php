@@ -4,6 +4,7 @@ namespace Dingo\Blueprint;
 
 use Dingo\Blueprint\Annotation\Attribute;
 use Dingo\Blueprint\Annotation\NamedType;
+use Dingo\Blueprint\Annotation\Parameter;
 use ReflectionClass;
 use RuntimeException;
 use Illuminate\Support\Str;
@@ -248,6 +249,32 @@ class Blueprint
 
         return static::T_STRING;
     }
+    /**
+     * @param Parameter $parameter
+     * @return string
+     */
+    protected function resolveParameterType(Parameter $parameter) {
+        if ($parameter->type) {
+            return $parameter->type;
+        }
+
+        if (is_int($parameter->example)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_float($parameter->example)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_array($parameter->example)) {
+            return isset($parameter->example[0])
+                ? static::T_ARRAY
+                : static::T_OBJECT
+                ;
+        }
+
+        return static::T_STRING;
+    }
 
     /**
      * Append the attributes subsection to a resource or action.
@@ -341,13 +368,19 @@ class Blueprint
         $this->appendSection($contents, 'Parameters');
 
         $parameters->each(function ($parameter) use (&$contents) {
+            $example = $parameter->example && is_array($parameter->example)
+                ? json_encode($parameter->example)
+                : $parameter->example
+            ;
+
+            $type = $this->resolveParameterType($parameter);
             $contents .= $this->line();
             $contents .= $this->tab();
             $contents .= sprintf(
                 '+ %s:%s (%s, %s) - %s',
                 $parameter->identifier,
-                $parameter->example ? " `{$parameter->example}`" : '',
-                $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
+                $example ? " `{$example}`" : '',
+                $parameter->members ? sprintf('enum[%s]', $type) : $type,
                 $parameter->required ? 'required' : 'optional',
                 $parameter->description
             );
