@@ -69,6 +69,10 @@ class RestResource extends Section
         $this->setResourceOnActions();
     }
 
+    public function getAnnotations() {
+        return $this->annotations;
+    }
+
     /**
      * Set the resource on each of the actions.
      *
@@ -141,11 +145,21 @@ class RestResource extends Section
     public function getDescription()
     {
         $factory = \phpDocumentor\Reflection\DocBlockFactory::createInstance();
-        $docblock = $factory->create($this->reflector);
 
-        $text = $docblock->getSummary().$docblock->getDescription();
+        try {
+            $docblock = $factory->create($this->reflector);
 
-        return $text;
+            if (!$docblock)
+                return '';
+
+            $text = $docblock->getSummary() . $docblock->getDescription();
+
+            return $text;
+        }
+
+        catch (\InvalidArgumentException $e) {
+            return '';
+        }
     }
 
     /**
