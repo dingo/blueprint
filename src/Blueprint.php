@@ -2,6 +2,9 @@
 
 namespace Dingo\Blueprint;
 
+use Dingo\Blueprint\Annotation\Attribute;
+use Dingo\Blueprint\Annotation\NamedType;
+use Dingo\Blueprint\Annotation\Parameter;
 use ReflectionClass;
 use RuntimeException;
 use Illuminate\Support\Str;
@@ -12,6 +15,12 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
 class Blueprint
 {
+    const T_NUMBER = 'number';
+    const T_FLOAT = 'float';
+    const T_ARRAY = 'array';
+    const T_OBJECT = 'object';
+    const T_STRING = 'string';
+
     /**
      * Simple annotation reader instance.
      *
@@ -108,7 +117,6 @@ class Blueprint
             }
 
             $annotations = new Collection($this->reader->getClassAnnotations($controller));
-
             return new RestResource($controller->getName(), $controller, $annotations, $actions);
         });
 
@@ -130,15 +138,16 @@ class Blueprint
      */
     protected function generateContentsFromResources(Collection $resources, $name, $overviewFile = null)
     {
+        $typeDefinitions = '';
         $contents = '';
 
-        $contents .= $this->getFormat();
-        $contents .= $this->line(2);
-        $contents .= sprintf('# %s', $name);
-        $contents .= $this->line(2);
-        $contents .= $this->getOverview($overviewFile);
+        $typeDefinitions .= $this->getFormat();
+        $typeDefinitions .= $this->line(2);
+        $typeDefinitions .= sprintf('# %s', $name);
+        $typeDefinitions .= $this->line(2);
+        $typeDefinitions .= $this->getOverview($overviewFile);
 
-        $resources->each(function ($resource) use (&$contents) {
+        $resources->each(function ($resource) use (&$contents, &$typeDefinitions, $name) {
             if ($resource->getActions()->isEmpty()) {
                 return;
             }
@@ -150,17 +159,33 @@ class Blueprint
                 $contents .= $description;
             }
 
+            if (($annotations = $resource->getAnnotations()) instanceof Collection) {
+                foreach($annotations as $annotation) {
+                    if ($annotation instanceof NamedType) {
+                        if (empty($annotation->name)) {
+                            throw new \RuntimeException('NamedType has no name');
+                        }
+
+                        $this->appendTypes($typeDefinitions, new Collection([$annotation]));
+                    }
+                }
+            }
+
             if (($parameters = $resource->getParameters()) && ! $parameters->isEmpty()) {
                 $this->appendParameters($contents, $parameters);
             }
 
-            $resource->getActions()->each(function ($action) use (&$contents, $resource) {
+            $resource->getActions()->each(function ($action) use (&$contents, &$typeDefinitions, $resource) {
                 $contents .= $this->line(2);
                 $contents .= $action->getDefinition();
 
                 if ($description = $action->getDescription()) {
                     $contents .= $this->line();
                     $contents .= $description;
+                }
+
+                if (($types = $action->getTypes()) && ! $types->isEmpty()) {
+                    $this->appendTypes($typeDefinitions, $types);
                 }
 
                 if (($attributes = $action->getAttributes()) && ! $attributes->isEmpty()) {
@@ -195,7 +220,60 @@ class Blueprint
             $contents .= $this->line(2);
         });
 
-        return stripslashes(trim($contents));
+        return stripslashes(trim($typeDefinitions) . "\n\n" . trim($contents));
+    }
+
+    /**
+     * @param Attribute $attribute
+     * @return string
+     */
+    protected function resolveAttributeType(Attribute $attribute) {
+        if ($attribute->type) {
+            return $attribute->type;
+        }
+
+        if (is_int($attribute->sample)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_float($attribute->sample)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_array($attribute->sample)) {
+            return isset($attribute->sample[0])
+                ? static::T_ARRAY
+                : static::T_OBJECT
+                ;
+        }
+
+        return static::T_STRING;
+    }
+    /**
+     * @param Parameter $parameter
+     * @return string
+     */
+    protected function resolveParameterType(Parameter $parameter) {
+        if ($parameter->type) {
+            return $parameter->type;
+        }
+
+        if (is_int($parameter->example)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_float($parameter->example)) {
+            return static::T_NUMBER;
+        }
+
+        if (is_array($parameter->example)) {
+            return isset($parameter->example[0])
+                ? static::T_ARRAY
+                : static::T_OBJECT
+                ;
+        }
+
+        return static::T_STRING;
     }
 
     /**
@@ -217,16 +295,64 @@ class Blueprint
             $contents .= sprintf('+ %s', $attribute->identifier);
 
             if ($attribute->sample) {
-                $contents .= sprintf(': %s', $attribute->sample);
+                $contents .= sprintf(': %s', is_array($attribute->sample)
+                    ? json_encode($attribute->sample)
+                    : $attribute->sample)
+                ;
             }
 
             $contents .= sprintf(
                 ' (%s, %s) - %s',
-                $attribute->type,
+                $this->resolveAttributeType($attribute),
                 $attribute->required ? 'required' : 'optional',
                 $attribute->description
             );
         });
+    }
+    /**
+     * Append the types subsection to a resource or action.
+     *
+     * @param string                         $contents
+     * @param \Illuminate\Support\Collection $types
+     *
+     * @return void
+     */
+    protected function appendTypes(&$contents, Collection $types)
+    {
+        $types->each(
+        /**
+         * @param NamedType $type
+         */
+            function ($type) use (&$contents) {
+                $contents .= $this->line();
+                $contents .= $this->tab(0);
+                $contents .= sprintf(
+                    "# %s (%s) \n%s\n",
+                    $type->name,
+                    $type->derivedFrom,
+                    $type->description ?? ''
+                );
+
+                if ($type->properties !== NULL) {
+                    $contents .= sprintf(
+                        "# Properties\n",
+                        $type->name,
+                        $type->derivedFrom,
+                        $type->description ?? ''
+                    );
+                    foreach ($type->properties as $member) {
+                        $this->appendSection($contents, sprintf(
+                            '`%s` (%s) - %s',
+                            $member->name,
+                            $member->type ?? static::T_STRING,
+                            $member->sample),
+                            1, 0
+                        );
+                    }
+                }
+
+                $contents .= $this->line(2);
+            });
     }
 
     /**
@@ -242,13 +368,19 @@ class Blueprint
         $this->appendSection($contents, 'Parameters');
 
         $parameters->each(function ($parameter) use (&$contents) {
+            $example = $parameter->example && is_array($parameter->example)
+                ? json_encode($parameter->example)
+                : $parameter->example
+            ;
+
+            $type = $this->resolveParameterType($parameter);
             $contents .= $this->line();
             $contents .= $this->tab();
             $contents .= sprintf(
                 '+ %s:%s (%s, %s) - %s',
                 $parameter->identifier,
-                $parameter->example ? " `{$parameter->example}`" : '',
-                $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
+                $example ? " `{$example}`" : '',
+                $parameter->members ? sprintf('enum[%s]', $type) : $type,
                 $parameter->required ? 'required' : 'optional',
                 $parameter->description
             );
@@ -379,16 +511,17 @@ class Blueprint
      *
      * @param string $contents
      * @param string $name
-     * @param int    $indent
-     * @param int    $lines
+     * @param int $indent
+     * @param int $lines
      *
+     * @param string $prefix
      * @return void
      */
-    protected function appendSection(&$contents, $name, $indent = 0, $lines = 2)
+    protected function appendSection(&$contents, $name, $indent = 0, $lines = 2, $prefix = '+ ')
     {
         $contents .= $this->line($lines);
         $contents .= $this->tab($indent);
-        $contents .= '+ '.$name;
+        $contents .= $prefix.$name;
     }
 
     /**
@@ -398,6 +531,7 @@ class Blueprint
      * @param string $contentType
      *
      * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function prepareBody($body, $contentType)
     {

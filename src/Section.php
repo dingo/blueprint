@@ -57,4 +57,21 @@ abstract class Section
 
         return $attributes;
     }
+    /**
+     * Get a sections attribute annotations.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTypes()
+    {
+        $attributes = new Collection;
+
+        if ($annotation = $this->getAnnotationByType('Types')) {
+            foreach ($annotation->value as $attribute) {
+                $attributes[] = $attribute;
+            }
+        }
+
+        return $attributes;
+    }
 }
