@@ -147,6 +147,8 @@ class Blueprint
         $typeDefinitions .= $this->line(2);
         $typeDefinitions .= $this->getOverview($overviewFile);
 
+        $this->appendTableOfContents($contents, $resources);
+
         $resources->each(function ($resource) use (&$contents, &$typeDefinitions, $name) {
             if ($resource->getActions()->isEmpty()) {
                 return;
@@ -522,6 +524,68 @@ class Blueprint
         $contents .= $this->line($lines);
         $contents .= $this->tab($indent);
         $contents .= $prefix.$name;
+    }
+
+    protected function appendTableOfContents(&$contents, Collection $resources)
+    {
+        $contents .= sprintf('## Table of contents');
+        $contents .= $this->line(2);
+
+        $resources->each(function ($resource) use (&$contents) {
+            if ($resource->getActions()->isEmpty()) {
+                return;
+            }
+
+            $link = $this->slugify($resource->getUri());
+
+            if ($method = $resource->getMethod()) {
+                $link = $method . $link;
+            }
+
+            $link = $this->slugify($resource->getIdentifier()) . '-' . ($link == '/' ? '' : $link.'-');
+
+            $contents .= '* [' . str_replace('# ', '', $resource->getDefinition()) . '](#' . $link . ')';
+
+
+            $resource->getActions()->each(function ($action) use (&$contents, $resource) {
+                $link = $this->slugify($action->getMethod() . '-' . $action->getUri());
+                $link = $this->slugify($action->getIdentifier()) . '-' . ($link == '/' ? '' : $link.'-');
+
+                $contents .= $this->line();
+                $contents .= '    * ';
+                $contents .= '[' . str_replace('## ', '', $action->getDefinition()) . ']' . '(#' . $link . ')';
+            });
+
+
+            $contents .= $this->line(2);
+        });
+    }
+
+    protected function slugify($text)
+    {
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+        // trim
+        $text = trim($text, '-');
+
+        // remove duplicate -
+        $text = preg_replace('~-+~', '-', $text);
+
+        // lowercase
+        $text = strtolower($text);
+
+        if (empty($text)) {
+            return 'n-a';
+        }
+
+        return $text;
     }
 
     /**

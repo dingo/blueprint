@@ -21,6 +21,13 @@ FORMAT: 1A
 
 # testing
 
+## Table of contents
+
+* [Users [/users]](#users-users-)
+    * [Show all users. [GET /users]](#show-all-users-get-users-)
+    * [Show existing user. [GET /users/{id}]](#show-existing-user-get-users-id-)
+    * [Create new user. [POST /users]](#create-new-user-post-users-)
+
 # Users [/users]
 Users Resource.
 
