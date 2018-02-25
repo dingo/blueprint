@@ -53,6 +53,11 @@ FORMAT: 1A
 
 # testing
 
+## Table of contents
+
+* [Activity](#activity-n-a-)
+    * [Show all activities. [GET /activity]](#show-all-activities-get-activity-)
+
 # Activity
 
 ## Show all activities. [GET /activity]

@@ -526,6 +526,14 @@ class Blueprint
         $contents .= $prefix.$name;
     }
 
+    /**
+     * Append table of contents.
+     *
+     * @param string $contents
+     * @param \Illuminate\Support\Collection $resources
+     *
+     * @return void
+     */
     protected function appendTableOfContents(&$contents, Collection $resources)
     {
         $contents .= sprintf('## Table of contents');
@@ -561,6 +569,13 @@ class Blueprint
         });
     }
 
+    /**
+     * Make a slug with the passed text.
+     *
+     * @param string $text
+     *
+     * @return string
+     */
     protected function slugify($text)
     {
         // replace non letter or digits by -
