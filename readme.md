@@ -12,7 +12,7 @@ This package generates a valid API Blueprint 1A document from a collection of cl
 
 Some index method phpdoc example:
 
-```
+```php
 <?php
 
 /**
