@@ -376,14 +376,7 @@ class Blueprint
             $type = $this->resolveParameterType($parameter);
             $contents .= $this->line();
             $contents .= $this->tab();
-            $contents .= sprintf(
-                '+ %s:%s (%s, %s) - %s',
-                $parameter->identifier,
-                $example ? " `{$example}`" : '',
-                $parameter->members ? sprintf('enum[%s]', $type) : $type,
-                $parameter->required ? 'required' : 'optional',
-                $parameter->description
-            );
+            $contents .= $this->getParameterContent($parameter);
 
             if (isset($parameter->default)) {
                 $this->appendSection($contents, sprintf('Default: %s', $parameter->default), 2, 1);
@@ -590,6 +583,55 @@ class Blueprint
     protected function getFormat()
     {
         return 'FORMAT: 1A';
+    }
+
+    /**
+     * Get the parameters string
+     *
+     * @return string
+     */
+    protected function getParameterContent($parameter)
+    {
+        if ($parameter->example) {
+            $content = $this->getParametrContentWithExample($parameter);
+        } else {
+            $content = $this->getParametrContentWithoutExample($parameter);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Get formatted string with parameters with example
+     *
+     * @return string
+     */
+    protected function getParametrContentWithExample($parameter)
+    {
+        return sprintf(
+            '+ %s:%s (%s, %s) - %s',
+            $parameter->identifier,
+            $parameter->example ? " `{$parameter->example}`" : '',
+            $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
+            $parameter->required ? 'required' : 'optional',
+            $parameter->description
+        );
+    }
+
+    /**
+     * Get formatted string with parameters without example
+     *
+     * @return string
+     */
+    protected function getParametrContentWithoutExample($parameter)
+    {
+        return sprintf(
+            '+ %s (%s, %s) - %s',
+            $parameter->identifier,
+            $parameter->members ? sprintf('enum[%s]', $parameter->type) : $parameter->type,
+            $parameter->required ? 'required' : 'optional',
+            $parameter->description
+        );
     }
 
     /**
