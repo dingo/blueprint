@@ -208,15 +208,15 @@ Create a new user.
 User Photos Resource.
 
 + Parameters
-    + userId: (integer, required) - ID of user who owns the photos.
+    + userId (integer, required) - ID of user who owns the photos.
 
 ## Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
-    + sort: (string, optional) - Column to sort by.
+    + sort (string, optional) - Column to sort by.
         + Default: name
-    + order: (enum[string], optional) - Order of results, either `asc` or `desc`.
+    + order (enum[string], optional) - Order of results, either `asc` or `desc`.
         + Default: desc
         + Members
             + `asc` - Ascending order.
@@ -367,15 +367,15 @@ Create a new user.
 User Photos Resource.
 
 + Parameters
-    + userId: (integer, required) - ID of user who owns the photos.
+    + userId (integer, required) - ID of user who owns the photos.
 
 ## Show all photos. [GET /users/{userId}/photos{?sort,order}]
 Show all photos for a given user.
 
 + Parameters
-    + sort: (string, optional) - Column to sort by.
+    + sort (string, optional) - Column to sort by.
         + Default: name
-    + order: (enum[string], optional) - Order of results, either `asc` or `desc`.
+    + order (enum[string], optional) - Order of results, either `asc` or `desc`.
         + Default: desc
         + Members
             + `asc` - Ascending order.
@@ -396,7 +396,7 @@ Show all photos for a given user.
 Show an individual photo that belongs to a given user.
 
 + Parameters
-    + photoId: (integer, required) - ID of photo to show.
+    + photoId (integer, required) - ID of photo to show.
 
 + Response 200 (application/json)
 
@@ -454,7 +454,7 @@ Upload a new photo for a given user.
 Delete an existing photo for a given user.
 
 + Parameters
-    + photoId: (integer, required) - ID of photo to delete.
+    + photoId (integer, required) - ID of photo to delete.
 
 + Response 204 (application/json)
 
