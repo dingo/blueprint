@@ -2,6 +2,7 @@
 
 namespace Dingo\Blueprint;
 
+use Illuminate\Support\Str;
 use RuntimeException;
 use ReflectionMethod;
 use Illuminate\Support\Collection;
@@ -152,7 +153,7 @@ class Action extends Section
             return;
         }
 
-        if (! starts_with($uri, '{?')) {
+        if (! Str::startsWith($uri, '{?')) {
             $uri = '/'.$uri;
         }
 
