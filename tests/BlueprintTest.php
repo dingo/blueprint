@@ -3,12 +3,12 @@
 namespace Dingo\Blueprint\Tests;
 
 use Dingo\Blueprint\Blueprint;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
-class BlueprintTest extends PHPUnit_Framework_TestCase
+class BlueprintTest extends TestCase
 {
     public function testGeneratingBlueprintForSingleResource()
     {
