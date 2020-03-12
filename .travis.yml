@@ -1,10 +1,9 @@
 language: php
 
-dist: trusty
-
 php:
-  - 7.1
   - 7.2
+  - 7.3
+  - 7.4
 
 sudo: false
 
@@ -13,9 +12,11 @@ env:
     - setup=basic
 matrix:
   include:
-    - php: 7.1
-      env: setup=lowest
     - php: 7.2
+      env: setup=stable
+    - php: 7.3
+      env: setup=stable
+    - php: 7.4
       env: setup=stable
 
 install:
