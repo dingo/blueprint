@@ -1,5 +1,5 @@
 {
-    "name": "dingo/blueprint",
+    "name": "dzorogh/dingo-blueprint",
     "description": "API Blueprint documentation generator.",
     "keywords": ["blueprint", "api", "laravel", "dingo", "docs"],
     "license": "BSD-3-Clause",
