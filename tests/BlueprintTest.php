@@ -21,6 +21,13 @@ FORMAT: 1A
 
 # testing
 
+## Table of contents
+
+* [Users [/users]](#users-users-)
+    * [Show all users. [GET /users]](#show-all-users-get-users-)
+    * [Show existing user. [GET /users/{id}]](#show-existing-user-get-users-id-)
+    * [Create new user. [POST /users]](#create-new-user-post-users-)
+
 # Users [/users]
 Users Resource.
 
@@ -119,6 +126,17 @@ EOT;
 FORMAT: 1A
 
 # testing
+
+## Table of contents
+
+* [Users [/users]](#users-users-)
+    * [Show all users. [GET /users]](#show-all-users-get-users-)
+    * [Show existing user. [GET /users/{id}]](#show-existing-user-get-users-id-)
+    * [Create new user. [POST /users]](#create-new-user-post-users-)
+
+* [User Photos [/users/{userId}/photos]](#user-photos-users-userid-photos-)
+    * [Show all photos. [GET /users/{userId}/photos{?sort,order}]](#show-all-photos-get-users-userid-photos-sort-order-)
+    * [Upload new photo. [POST /users/{userId}/photos]](#upload-new-photo-post-users-userid-photos-)
 
 # Users [/users]
 Users Resource.
@@ -278,6 +296,19 @@ EOT;
 FORMAT: 1A
 
 # testing
+
+## Table of contents
+
+* [Users [/users]](#users-users-)
+    * [Show all users. [GET /users]](#show-all-users-get-users-)
+    * [Show existing user. [GET /users/{id}]](#show-existing-user-get-users-id-)
+    * [Create new user. [POST /users]](#create-new-user-post-users-)
+
+* [User Photos [/users/{userId}/photos]](#user-photos-users-userid-photos-)
+    * [Show all photos. [GET /users/{userId}/photos{?sort,order}]](#show-all-photos-get-users-userid-photos-sort-order-)
+    * [Show individual photo. [GET /users/{userId}/photos/{photoId}]](#show-individual-photo-get-users-userid-photos-photoid-)
+    * [Upload new photo. [POST /users/{userId}/photos]](#upload-new-photo-post-users-userid-photos-)
+    * [Delete photo. [DELETE /users/{userId}/photos/{photoId}]](#delete-photo-delete-users-userid-photos-photoid-)
 
 # Users [/users]
 Users Resource.
@@ -480,6 +511,11 @@ FORMAT: 1A
 
 # testing
 
+## Table of contents
+
+* [Activity](#activity-n-a-)
+    * [Show all activities. [GET /activity]](#show-all-activities-get-activity-)
+
 # Activity
 
 ## Show all activities. [GET /activity]
@@ -500,6 +536,11 @@ FORMAT: 1A
 # testing
 
 Overview content here.
+
+## Table of contents
+
+* [Activity](#activity-n-a-)
+    * [Show all activities. [GET /activity]](#show-all-activities-get-activity-)
 
 # Activity
 
