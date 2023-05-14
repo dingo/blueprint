@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 
 class Blueprint
 {
@@ -24,7 +24,7 @@ class Blueprint
     /**
      * Simple annotation reader instance.
      *
-     * @var \Doctrine\Common\Annotations\SimpleAnnotationReader
+     * @var \Doctrine\Common\Annotations\Reader
      */
     protected $reader;
 
@@ -45,12 +45,12 @@ class Blueprint
     /**
      * Create a new generator instance.
      *
-     * @param \Doctrine\Common\Annotations\SimpleAnnotationReader $reader
+     * @param \Doctrine\Common\Annotations\Reader $reader
      * @param \Illuminate\Filesystem\Filesystem                   $files
      *
      * @return void
      */
-    public function __construct(SimpleAnnotationReader $reader, Filesystem $files)
+    public function __construct(Reader $reader, Filesystem $files)
     {
         $this->reader = $reader;
         $this->files = $files;
@@ -65,9 +65,6 @@ class Blueprint
      */
     protected function registerAnnotationLoader()
     {
-        $this->reader->addNamespace('Dingo\\Blueprint\\Annotation');
-        $this->reader->addNamespace('Dingo\\Blueprint\\Annotation\\Method');
-
         AnnotationRegistry::registerLoader(function ($class) {
             $path = __DIR__.'/'.str_replace(['Dingo\\Blueprint\\', '\\'], ['', DIRECTORY_SEPARATOR], $class).'.php';
 
