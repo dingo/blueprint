@@ -5,13 +5,14 @@ namespace Dingo\Blueprint;
 use Dingo\Blueprint\Annotation\Attribute;
 use Dingo\Blueprint\Annotation\NamedType;
 use Dingo\Blueprint\Annotation\Parameter;
+use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use RuntimeException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use PHPUnit\Metadata\Parser\AnnotationParser;
 
 class Blueprint
 {
@@ -24,7 +25,7 @@ class Blueprint
     /**
      * Simple annotation reader instance.
      *
-     * @var \Doctrine\Common\Annotations\SimpleAnnotationReader
+     * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     protected $reader;
 
@@ -45,38 +46,15 @@ class Blueprint
     /**
      * Create a new generator instance.
      *
-     * @param \Doctrine\Common\Annotations\SimpleAnnotationReader $reader
+     * @param \Doctrine\Common\Annotations\AnnotationReader $reader
      * @param \Illuminate\Filesystem\Filesystem                   $files
      *
      * @return void
      */
-    public function __construct(SimpleAnnotationReader $reader, Filesystem $files)
+    public function __construct(AnnotationReader $reader, Filesystem $files)
     {
         $this->reader = $reader;
         $this->files = $files;
-
-        $this->registerAnnotationLoader();
-    }
-
-    /**
-     * Register the annotation loader.
-     *
-     * @return void
-     */
-    protected function registerAnnotationLoader()
-    {
-        $this->reader->addNamespace('Dingo\\Blueprint\\Annotation');
-        $this->reader->addNamespace('Dingo\\Blueprint\\Annotation\\Method');
-
-        AnnotationRegistry::registerLoader(function ($class) {
-            $path = __DIR__.'/'.str_replace(['Dingo\\Blueprint\\', '\\'], ['', DIRECTORY_SEPARATOR], $class).'.php';
-
-            if (file_exists($path)) {
-                require_once $path;
-
-                return true;
-            }
-        });
     }
 
     /**

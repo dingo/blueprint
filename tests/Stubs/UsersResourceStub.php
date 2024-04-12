@@ -2,6 +2,16 @@
 
 namespace Dingo\Blueprint\Tests\Stubs;
 
+use Dingo\Blueprint\Annotation\Attribute;
+use Dingo\Blueprint\Annotation\Resource;
+use Dingo\Blueprint\Annotation\Method\Get;
+use Dingo\Blueprint\Annotation\Method\Post;
+use Dingo\Blueprint\Annotation\Parameter;
+use Dingo\Blueprint\Annotation\Parameters;
+use Dingo\Blueprint\Annotation\Request;
+use Dingo\Blueprint\Annotation\Response;
+use Dingo\Blueprint\Annotation\Transaction;
+
 /**
  * Users Resource.
  *

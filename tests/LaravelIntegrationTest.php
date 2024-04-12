@@ -2,9 +2,9 @@
 
 namespace Dingo\Blueprint {
 
+    use Doctrine\Common\Annotations\AnnotationReader;
     use Illuminate\Support\Collection;
     use Illuminate\Filesystem\Filesystem;
-    use Doctrine\Common\Annotations\SimpleAnnotationReader;
     use PHPUnit\Framework\TestCase;
 
     class LaravelIntegrationTest extends TestCase
@@ -23,18 +23,24 @@ EOT;
         {
             $resources = new Collection([new Tests\Stubs\ActivityController]);
 
-            $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
+            $blueprint = new Blueprint(new AnnotationReader(), new Filesystem);
 
-            $this->assertEquals(trim($this->simpleExample), $blueprint->generate($resources, 'testing', 'v1', null));
+            $this->assertEquals(
+                trim($this->simpleExample),
+                $blueprint->generate($resources, 'testing', 'v1', null)
+            );
         }
 
         public function testGetAnnotationByTypeInLaravel53x()
         {
             $resources = new Collection([new Tests\Stubs\ActivityController]);
 
-            $blueprint = new Blueprint(new SimpleAnnotationReader, new Filesystem);
+            $blueprint = new Blueprint(new AnnotationReader, new Filesystem);
 
-            $this->assertEquals(trim($this->simpleExample), $blueprint->generate($resources, 'testing', 'v1', null));
+            $this->assertEquals(
+                trim($this->simpleExample),
+                $blueprint->generate($resources, 'testing', 'v1', null)
+            );
         }
     }
 
